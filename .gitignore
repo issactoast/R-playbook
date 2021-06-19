@@ -37,3 +37,11 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Rmd 파일
+*.Rmd
+*/css
+*/img
+*/libs
+
+*.Rproj
