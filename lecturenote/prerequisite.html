@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>.blue[R] 프로그래밍 기초다지기</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Issac Lee" />
+    <script src="libs/header-attrs-2.8.1/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link rel="stylesheet" href="css/statisticsplaybook.css" type="text/css" />
+    <link rel="stylesheet" href="css/statisticsplaybook-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, left, top
+
+# .blue[R] 프로그래밍 기초다지기
+----
+## **준비작업 - 프로그램 설치 및 작업환경 세팅**
+### 슬기로운통계생활
+### Issac Lee
+
+
+---
+class: inverse, middle, center
+
+# 시작이 제일 .red[중요함].
+
+프로그램 설치도 처음에 잘해놔야 좋습니당.
+
+---
+
+# 우리가 설치할 프로그램
+
+.left-column[
+
+
+]
+.right-column[
+
+강의는 .red[윈도우 기준]으로 진행합니다.
+
+### R &amp; Rtools40
+
+  * 최신 버전 4.1.0 (21년 6월 현재)
+  
+  * C/C++ 코드가 들어간 R 패키지를 윈도우에 설치를 위해서 필요 (Linux와 Mac은 설치 불필요)
+
+### Rstudio
+
+  * Rstudio 테마 설치: VScode 테마가 가장 좋음
+
+  * Ligature 폰트 설치: 코드의 가독성을 좋게 만들어 줌
+
+]
+
+
+---
+# R program
+
+.left-column[
+
+]
+.right-column[
+
+## OS 별 설치링크
+
+### R
+
+Windows - https://cran.r-project.org/bin/windows/base/
+
+Mac - https://cran.r-project.org/bin/macosx/
+
+### Rtools
+
+* Windows - https://cran.r-project.org/bin/windows/Rtools/
+]
+
+---
+# 설치시 주의할 점
+
+.left-column[
+
+]
+.right-column[
+
+### 꼭 알아야할 것들
+
+말 안 듣다가 골로 간다잉.
+
+* OneDrive 사용하지 마세요
+
+  - Github 사용
+
+* 윈도우 사용자 이름 영어로 설정 
+
+  - 설치 경로에 한글이 섞여있으면 머리가 아파집니다.
+
+]
+
+---
+# 설치 순서
+
+.left-column[
+
+]
+.right-column[
+
+### Step 1 - 파일 다운로드
+
+* R, Rtools, Rstudio 설치파일 다운로드
+
+### Step 2 - R 설치
+
+* 설치 경로 통일: `C:R` 폴더에 모두 설치할 예정
+
+* R 설치파일 실행시 관리자 모드로 실행
+
+* R 설치 후 R 폴더에 쓰기 권한 부여 - 오른쪽 클릭 후 읽기 only 해제
+
+
+]
+
+
+---
+# 설치 순서
+
+.left-column[
+
+]
+.right-column[
+
+### Step 3 - Rtools 설치
+
+* 관리자 모드 실행 설치 및 폴더 설정
+
+* 설치 후 `RTOOLS40_HOME` 환경변수 생성: 값 - `C:\R\rtools40\`
+
+* Path 변수에 `%RTOOLS40_HOME%\usr\bin\` 추가
+
+### Step 4 - Rstudio 설치
+
+* 오른쪽 클릭 후 관리자 권한으로 실행 - 설치 경로 `C:\R\Rstudio`
+
+* 설치 후 `Sys.which("make")` 명령어로 rtools 연결 확인
+
+]
+
+---
+# 설치 확인
+
+.left-column[
+
+]
+.right-column[
+
+&lt;img src="https://image.flaticon.com/icons/png/512/1505/1505465.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+.center[다음 명령어가 이상없이 실행 된다면 OK!]
+
+
+```r
+install.packages("jasonlite", type = "source")
+```
+
+]
+
+---
+class: inverse, middle, center
+
+# 작업환경 .red[Hip]하게 셋팅하기.
+
+Rstudio 테마 설치
+
+Ligature 폰트 적용하기
+
+
+---
+# Rstudio 테마 적용하기
+
+.left-column[
+
+]
+.right-column[
+### rscode.io 설치하기
+
+* remote 패키지 및 테마 설치하기
+
+
+```r
+install.packages("remotes")
+remotes::install_github("anthonynorth/rscodeio")
+```
+
+* RStudio 실행 시 관리자 권한으로 실행
+
+
+```r
+rscodeio::install_theme()
+```
+
+이거 실행 후 껏다가 켭시다!
+
+]
+
+---
+# Rstudio 테마 적용하기
+
+.left-column[
+
+]
+.right-column[
+
+다음의 사항들을 체크합시다.
+
+* Tools → Global Options → Code → Display
+
+  * Highlight selected line
+  * Show indent guides
+  * Show syntax highlighting in console input
+  * Highlight R function calls
+
+### 주의사항
+
+* 다른 테마를 적용하려고 할 경우!
+
+`rscodeio::deactivate_menu_theme` 명령어 한번 실행해 줌.
+
+]
+
+---
+# Ligature 폰트 적용
+
+.left-column[
+
+]
+.right-column[
+
+Ligature 폰트란 코드의 가독성을 높여주는 폰트.
+
+* 한번 사용하면 못 돌아감.
+
+* 테마와 함께 사용하면 엄청 .blue[있어보임.]
+
+### 설치 방법
+
+* FiraCode 폰트 다운로드 후 Rstudio에서 설치
+
+github.com/tonsky/FiraCode
+
+* ttf 폴더에 있는 파일들을 모두 선택 -&gt; 오른쪽 클릭 -&gt; 설치
+
+* Rstudio에서 옵션 -&gt; Appearance -&gt; Editor
+
+
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<!--Hat-tip: https://www.garrickadenbuie.com/blog/xaringan-tip-logo-all-slides/-->
+<style>
+.logo {
+  background-image: url(img/logo-blue.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

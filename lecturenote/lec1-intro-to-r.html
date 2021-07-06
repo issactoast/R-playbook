@@ -21,7 +21,7 @@ class: title-slide, left, top
 
 # .blue[R] 프로그래밍 기초다지기
 ----
-## **1강 설치 및 세팅**
+## **1강 - R 프로그래밍 첫 걸음마 떼기**
 ### 슬기로운통계생활
 ### Issac Lee
 
@@ -29,26 +29,182 @@ class: title-slide, left, top
 ---
 class: inverse, middle, center
 
-# An inverse slide
+# 코스 훑어보기.
 
-
-Often used for transitions
+.red[Big picture]가 중요합니다.
 
 ---
+# R 코드를 실행 시키는 방법
 
-# A slide where bullets appear
+.left-column[
 
---
 
-* first point
+]
+.right-column[
 
---
+R 코드를 돌리는 방법에는 2가지가 있습니다.
 
-* second point
+### Interactive mode
 
---
+  * R 콘솔 (Console) 창에서 돌리는 방법
+  
+  * R script에서 코드를 콘솔로 보내는 방법. (`Ctrl + Enter`)
 
-* third point
+### Batch mode
+
+  * 미리 저장된 `.R` 파일을 window 커맨드 혹은 파워쉘(PowerShell) 에서 돌리는 방법
+  
+
+```r
+R CMD BATCH test.R
+```
+  
+]
+
+
+---
+# 첫 R 세션 실행하기
+
+.left-column[
+
+]
+.right-column[
+
+## 변수 만들기
+
+* 변수는 object가 들어갈 수 있는 상자라고 생각하자.
+
+* R에서는 상자의 크기가 자유자재로 늘어날 수 있다.
+
+.pull-left[
+
+```r
+x &lt;- 1
+x
+```
+
+```
+## [1] 1
+```
+
+]
+.pull-right[
+
+```r
+x &lt;- c(1, 2, 4)
+x
+```
+
+```
+## [1] 1 2 4
+```
+
+]
+
+* 변수에 어떤 것을 할당 (짚어 넣을 때) 할 때, R에서는 `&lt;-` 오퍼레이터를 사용함.
+
+]
+
+---
+# 벡터 (Vector)
+
+.left-column[
+
+]
+.right-column[
+
+앞선 예제에서 숫자를 여러개 묶어서 하나의 물건 (객체, object) 처럼 만들 수 있는 방법.
+
+
+```r
+c(1, 2, 4, 5)
+```
+
+```
+## [1] 1 2 4 5
+```
+
+&lt;img src="https://image.flaticon.com/icons/png/512/1017/1017466.png" width="10%" style="display: block; margin: auto;" /&gt;
+
+`c`는 영어로 `concatenate`을 의미.
+
+]
+
+
+---
+# 객체의 부분에 접근하는 방법 (Subsetting)
+
+.left-column[
+
+]
+.right-column[
+* 벡터는 여러 숫자를 색인을 통하여 접근함.
+
+* 첫번째 자리가 1에서부터 시작.
+
+* 대괄호 `[]` 를 사용해서 부분에 접근 할 수 있음.
+
+* 4개 숫자가 들어있는 벡터 `x`의 3번째 숫자에 접근하는 방법
+
+
+```r
+x &lt;- c(1, 2, 4, 5)
+x[3]
+```
+
+```
+## [1] 4
+```
+
+]
+
+---
+# 콜론(`:`) 연산자
+
+.left-column[
+
+]
+.right-column[
+
+* 처음 시작 숫자와 마지막 숫자까지 1씩 증가 혹은 감소하는 수열을 만들어줌.
+
+.pull-left[
+
+```r
+1:5
+```
+
+```
+## [1] 1 2 3 4 5
+```
+
+]
+.pull-right[
+
+```r
+5:1
+```
+
+```
+## [1] 5 4 3 2 1
+```
+
+]
+
+* 이것을 사용해서 Subset을 할 수 있음.
+
+
+```r
+x[2:4]
+```
+
+```
+## [1] 2 4 5
+```
+
+
+
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
