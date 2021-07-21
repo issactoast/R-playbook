@@ -308,29 +308,29 @@ plot(raster::as.raster(img1),
 .pull-left[
 
 ```r
-img_url &lt;- "https://raw.githubusercontent.com/issactoast/R-playbook/main/lecturenote/img/jelly(bw).png"
-img_file &lt;- tempfile()
-download.file(img_url, 
-              img_file, 
-              mode = "wb")
-
-img &lt;- png::readPNG(img_file)
-file.remove(img_file)
+data_url &lt;- "https://raw.githubusercontent.com/issactoast/R-playbook/main/lecturenote/data/img.rds"
+download.file(data_url, "jelly.rds")
+jelly_bw &lt;- readRDS("jelly.rds")
+file.remove("jelly.rds")
 ```
 
 ```
 ## [1] TRUE
 ```
 
+```r
+# img &lt;- png::readPNG(img_file)dd
+```
+
 ]
 .pull-right[
 
 ```r
-dim(img)
+dim(jelly_bw)
 ```
 
 ```
-## [1] 88 50  4
+## [1] 88 50
 ```
 
 ]
