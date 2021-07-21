@@ -41,7 +41,6 @@ vignettes/*.pdf
 # Rmd 파일
 *.Rmd
 */css
-*/img
 */libs
 
 *.Rproj
