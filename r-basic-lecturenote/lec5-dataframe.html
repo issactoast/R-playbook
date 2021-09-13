@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>.blue[R] 프로그래밍 기초다지기</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Issac Lee" />
+    <script src="libs/header-attrs-2.9.5/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link rel="stylesheet" href="css/statisticsplaybook.css" type="text/css" />
+    <link rel="stylesheet" href="css/statisticsplaybook-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, left, top
+
+# .blue[R] 프로그래밍 기초다지기
+----
+## **5강 - 데이터 프레임 가지고 놀기**
+### [슬기로운통계생활](https://www.youtube.com/c/statisticsplaybook)
+### Issac Lee
+
+
+---
+class: inverse, middle, center
+
+# .red[Data Frame]를 배워보자. 
+
+&lt;img src="https://image.flaticon.com/icons/png/512/5221/5221470.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+---
+# 데이터 프레임(Data frame)이란 무엇일까?
+
+.left-column[
+
+]
+.right-column[
+
+
+.pull-left[
+
+### 2차원 모양의 프레임!
+
+* 행렬의 경우 구성원들이 .red[모두 같은] 타입이여야 함.
+
+
+```r
+matrix(c(as.character(c(1:5)), 6:10),
+       ncol = 2)
+```
+
+```
+##      [,1] [,2]
+## [1,] "1"  "6" 
+## [2,] "2"  "7" 
+## [3,] "3"  "8" 
+## [4,] "4"  "9" 
+## [5,] "5"  "10"
+```
+
+
+]
+.pull-right[
+
+* 데이터 프레임은 각 열의 `mode`가 다를 수 있음.
+
+
+```r
+data.frame(col1 = c("one", "two", "three", "four", "five"),
+           col2 = c(6:10))
+```
+
+```
+##    col1 col2
+## 1   one    6
+## 2   two    7
+## 3 three    8
+## 4  four    9
+## 5  five   10
+```
+
+]
+
+]
+
+---
+# 데이터 프레임 만들기
+
+.left-column[
+
+]
+.right-column[
+
+
+.pull-left[
+### 특징
+
+* 데이터 분석에서 가장 많이 쓰이는 형태의 자료저장 방법
+
+### 선언방법
+
+* `data.frame()` 함수를 사용하여 선언
+
+* 각 열에 들어갈 벡터들을 차례대로 넣어줌.
+
+]
+.pull-right[
+
+```r
+name &lt;- c("issac", "bomi")
+birthmonth &lt;- c(5, 4)
+
+my_df &lt;- data.frame(name, 
+                    birthmonth)
+my_df
+```
+
+```
+##    name birthmonth
+## 1 issac          5
+## 2  bomi          4
+```
+
+]
+
+]
+
+---
+# 원소 접근 방법
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+### 유연한 접근 방식을 제공
+
+* 열 이름을 `$` 연산자를 사용해서 접근
+
+* 리스트의 특성처럼 각 열을 `[[]]` 기호를 사용해서 접근 가능
+
+* 행렬 형태로 접근 가능함.
+
+]
+.pull-right[
+
+
+```r
+my_df$name
+```
+
+```
+## [1] "issac" "bomi"
+```
+
+```r
+my_df[[1]]
+```
+
+```
+## [1] "issac" "bomi"
+```
+
+```r
+my_df[, 1]
+```
+
+```
+## [1] "issac" "bomi"
+```
+
+]
+
+]
+
+---
+# `csv` 파일로 읽어오기 
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+### 중간고사 성적 데이터
+
+* [링크](https://www.theissaclee.com/ko/courses/rstat101/examscore.csv)를 클릭해서 파일을 다운 받아주세요.
+
+
+```r
+mydata &lt;- 
+  read.csv("examscore.csv", 
+          header = TRUE)
+```
+
+* url을 사용해서 바로 읽어오는 것도 가능
+
+
+```r
+mydata &lt;- read.csv("https://www.theissaclee.com/ko/courses/rstat101/examscore.csv", header = TRUE)
+```
+
+
+]
+.pull-right[
+
+
+```r
+head(mydata)
+```
+
+```
+##   student_id gender midterm final
+## 1          1      F      38    46
+## 2          2      M      42    67
+## 3          3      F      53    56
+## 4          4      M      48    54
+## 5          5      M      46    39
+## 6          6      M      51    74
+```
+
+```r
+dim(mydata)
+```
+
+```
+## [1] 30  4
+```
+
+]
+
+]
+
+---
+# 데이터 프레임 인덱싱(indexing)
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 행렬 접근 방법 사용하기
+
+* 행렬 접근 방식과 동일하게 `[]`을 이용
+
+* `drop` 옵션을 사용해서 형식을 유지
+
+
+```r
+mydata[1:4, 2]
+```
+
+```
+## [1] "F" "M" "F" "M"
+```
+
+```r
+class(mydata[1:4, 2])
+```
+
+```
+## [1] "character"
+```
+
+]
+.pull-right[
+
+
+```r
+mydata[1:4, 2, drop = FALSE]
+```
+
+```
+##   gender
+## 1      F
+## 2      M
+## 3      F
+## 4      M
+```
+
+```r
+class(mydata[1:4, 2, drop = FALSE])
+```
+
+```
+## [1] "data.frame"
+```
+
+]
+
+]
+
+---
+# `NA`에 대처하는 우리들의 자세
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 완전한 표본 체크
+
+
+```r
+mydata[1, 2] &lt;- NA
+```
+
+* `complete.cases()`: 모든 열이 꽉 채워져있는 완전한 행들만을 `TRUE`로 반환
+
+* `NA`가 제거된 꽉찬 데이터 프레임을 얻기 위해서는 어떻게 해야할까?
+
+]
+.pull-right[
+
+
+```r
+sum(complete.cases(mydata$gender))
+```
+
+```
+## [1] 29
+```
+
+```r
+complete.cases(mydata)
+```
+
+```
+##  [1] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+```
+
+
+]
+
+]
+
+---
+# 구성원소 추가/삭제/변경
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 변경 및 추가
+
+* `$` 기호를 사용하여 새로운 열을 만들기
+
+
+```r
+mydata$total &lt;- 
+  mydata$midterm + 
+  mydata$final
+mydata[1:3, 4:5]
+```
+
+```
+##   final total
+## 1    46    84
+## 2    67   109
+## 3    56   109
+```
+
+]
+.pull-right[
+
+* `cbind` 함수 사용
+
+
+```r
+mydata &lt;- cbind(mydata, 
+                mydata$total/2)
+names(mydata)[6]
+```
+
+```
+## [1] "mydata$total/2"
+```
+
+```r
+names(mydata)[6] &lt;- "average"
+mydata[1:3, 4:6]
+```
+
+```
+##   final total average
+## 1    46    84    42.0
+## 2    67   109    54.5
+## 3    56   109    54.5
+```
+
+]
+
+]
+
+---
+# 구성원소 추가/삭제/변경
+
+.left-column[
+
+]
+.right-column[
+
+### `NULL`을 사용한 삭제
+
+
+```r
+mydata$gender &lt;- NULL
+head(mydata)
+```
+
+```
+##   student_id midterm final total average
+## 1          1      38    46    84    42.0
+## 2          2      42    67   109    54.5
+## 3          3      53    56   109    54.5
+## 4          4      48    54   102    51.0
+## 5          5      46    39    85    42.5
+## 6          6      51    74   125    62.5
+```
+
+]
+
+---
+# `subset()` 함수를 이용한 필터링
+
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+### 행렬 형식 접근
+
+
+```r
+mydata[mydata$midterm &lt;= 15,]
+```
+
+```
+##    student_id midterm final total average
+## 20         20       9    33    42    21.0
+## 22         22      15    12    27    13.5
+```
+
+]
+.pull-right[
+* `subset()` 이용
+
+
+```r
+subset(mydata, midterm &lt;= 15)
+```
+
+```
+##    student_id midterm final total average
+## 20         20       9    33    42    21.0
+## 22         22      15    12    27    13.5
+```
+
+]
+
+]
+
+---
+# 데이터 프레임 합치기
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 두 개의 데이터를 합쳐보자. 
+
+
+```r
+mydata2 &lt;- data.frame(id = sample(1:30, 5),
+                      result = c(rep("Pass", 3), rep("Fail", 2)))
+mydata2
+```
+
+```
+##   id result
+## 1  4   Pass
+## 2  5   Pass
+## 3 29   Pass
+## 4 19   Fail
+## 5 28   Fail
+```
+
+]
+.pull-right[
+
+
+```r
+merge(mydata, mydata2,
+      by.x = "student_id", 
+      by.y = "id")
+```
+
+```
+##   student_id midterm final total average result
+## 1          4      48    54   102    51.0   Pass
+## 2          5      46    39    85    42.5   Pass
+## 3         19      39    16    55    27.5   Fail
+## 4         28      52    66   118    59.0   Fail
+## 5         29      65    78   143    71.5   Pass
+```
+
+* `all` 옵션은 기본적으로 꺼져있음.
+
+]
+
+
+]
+
+---
+# 펭귄 데이터셋
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+### 데이터 분석 계의 유명인사
+
+* 펭귄 3종 세트
+
+&lt;img src="https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+# install.packages(palmerpenguins)
+library(palmerpenguins)
+```
+
+]
+.pull-right[
+
+* 펭귄 종류별 몸무게와 부리 길이 측정 데이터
+
+&lt;img src="https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+* 이제까지 우리가 배운 기술들을 적용해봅시다!
+
+]
+
+]
+
+---
+# `order()` 함수를 이용한 정렬
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+### 부리 특정 기준을 사용한 분리
+
+
+```r
+df_penguins &lt;- data.frame(penguins)
+str(df_penguins)
+```
+
+```
+## 'data.frame':	344 obs. of  8 variables:
+##  $ species          : Factor w/ 3 levels "Adelie","Chinstrap",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ island           : Factor w/ 3 levels "Biscoe","Dream",..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ bill_length_mm   : num  39.1 39.5 40.3 NA 36.7 39.3 38.9 39.2 34.1 42 ...
+##  $ bill_depth_mm    : num  18.7 17.4 18 NA 19.3 20.6 17.8 19.6 18.1 20.2 ...
+##  $ flipper_length_mm: int  181 186 195 NA 193 190 181 195 193 190 ...
+##  $ body_mass_g      : int  3750 3800 3250 NA 3450 3650 3625 4675 3475 4250 ...
+##  $ sex              : Factor w/ 2 levels "female","male": 2 1 1 NA 1 2 1 2 NA NA ...
+##  $ year             : int  2007 2007 2007 2007 2007 2007 2007 2007 2007 2007 ...
+```
+
+
+]
+.pull-right[
+
+
+```r
+head(order(df_penguins$bill_length_mm))
+```
+
+```
+## [1] 143  99  71  93   9  19
+```
+
+```r
+df_penguins[order(df_penguins$bill_length_mm),]
+```
+
+```
+##       species    island bill_length_mm bill_depth_mm flipper_length_mm
+## 143    Adelie     Dream           32.1          15.5               188
+## 99     Adelie     Dream           33.1          16.1               178
+## 71     Adelie Torgersen           33.5          19.0               190
+## 93     Adelie     Dream           34.0          17.1               185
+## 9      Adelie Torgersen           34.1          18.1               193
+## 19     Adelie Torgersen           34.4          18.4               184
+## 55     Adelie    Biscoe           34.5          18.1               187
+## 15     Adelie Torgersen           34.6          21.1               198
+## 81     Adelie Torgersen           34.6          17.2               189
+## 53     Adelie    Biscoe           35.0          17.9               190
+## 101    Adelie    Biscoe           35.0          17.9               192
+## 84     Adelie Torgersen           35.1          19.4               193
+## 125    Adelie Torgersen           35.2          15.9               186
+## 26     Adelie    Biscoe           35.3          18.9               187
+## 67     Adelie    Biscoe           35.5          16.2               195
+## 75     Adelie Torgersen           35.5          17.5               190
+## 137    Adelie     Dream           35.6          17.5               191
+## 61     Adelie    Biscoe           35.7          16.9               185
+## 91     Adelie     Dream           35.7          18.0               202
+## 119    Adelie Torgersen           35.7          17.0               189
+## 23     Adelie    Biscoe           35.9          19.2               189
+## 69     Adelie Torgersen           35.9          16.6               190
+## 43     Adelie     Dream           36.0          18.5               186
+## 49     Adelie     Dream           36.0          17.9               190
+## 149    Adelie     Dream           36.0          17.8               195
+## 151    Adelie     Dream           36.0          17.1               187
+## 79     Adelie Torgersen           36.2          16.1               187
+## 95     Adelie     Dream           36.2          17.3               187
+## 121    Adelie Torgersen           36.2          17.2               187
+## 87     Adelie     Dream           36.3          19.5               190
+## 35     Adelie     Dream           36.4          17.0               195
+## 65     Adelie    Biscoe           36.4          17.1               184
+## 41     Adelie     Dream           36.5          18.0               182
+## 59     Adelie    Biscoe           36.5          16.6               181
+## 16     Adelie Torgersen           36.6          17.8               185
+## 148    Adelie     Dream           36.6          18.4               184
+## 5      Adelie Torgersen           36.7          19.3               193
+## 83     Adelie Torgersen           36.7          18.8               187
+## 133    Adelie     Dream           36.8          18.5               193
+## 88     Adelie     Dream           36.9          18.6               189
+## 45     Adelie     Dream           37.0          16.9               185
+## 139    Adelie     Dream           37.0          16.5               185
+## 32     Adelie     Dream           37.2          18.1               178
+## 78     Adelie Torgersen           37.2          19.4               184
+## 85     Adelie     Dream           37.3          17.8               191
+## 118    Adelie Torgersen           37.3          20.5               199
+## 145    Adelie     Dream           37.3          16.8               192
+## 48     Adelie     Dream           37.5          18.9               179
+## 134    Adelie     Dream           37.5          18.5               199
+## 39     Adelie     Dream           37.6          19.3               181
+## 60     Adelie    Biscoe           37.6          19.1               194
+## 63     Adelie    Biscoe           37.6          17.0               185
+## 22     Adelie    Biscoe           37.7          18.7               180
+## 103    Adelie    Biscoe           37.7          16.0               183
+## 122    Adelie Torgersen           37.7          19.8               198
+## 11     Adelie Torgersen           37.8          17.1               186
+## 12     Adelie Torgersen           37.8          17.3               180
+## 21     Adelie    Biscoe           37.8          18.3               174
+## 104    Adelie    Biscoe           37.8          20.0               190
+## 150    Adelie     Dream           37.8          18.1               193
+## 29     Adelie    Biscoe           37.9          18.6               172
+## 105    Adelie    Biscoe           37.9          18.6               193
+## 97     Adelie     Dream           38.1          18.6               190
+## 109    Adelie    Biscoe           38.1          17.0               181
+## 111    Adelie    Biscoe           38.1          16.5               198
+## 135    Adelie     Dream           38.1          17.6               187
+## 24     Adelie    Biscoe           38.2          18.1               185
+## 108    Adelie    Biscoe           38.2          20.0               190
+## 89     Adelie     Dream           38.3          19.2               189
+## 131    Adelie Torgersen           38.5          17.9               190
+## 14     Adelie Torgersen           38.6          21.2               191
+## 107    Adelie    Biscoe           38.6          17.2               199
+## 117    Adelie Torgersen           38.6          17.0               188
+## 17     Adelie Torgersen           38.7          19.0               195
+## 25     Adelie    Biscoe           38.8          17.2               180
+## 37     Adelie     Dream           38.8          20.0               190
+## 127    Adelie Torgersen           38.8          17.6               191
+## 7      Adelie Torgersen           38.9          17.8               181
+## 90     Adelie     Dream           38.9          18.8               190
+## 57     Adelie    Biscoe           39.0          17.5               186
+## 129    Adelie Torgersen           39.0          17.1               191
+## 146    Adelie     Dream           39.0          18.7               185
+## 1      Adelie Torgersen           39.1          18.7               181
+## 8      Adelie Torgersen           39.2          19.6               195
+## 36     Adelie     Dream           39.2          21.1               196
+## 147    Adelie     Dream           39.2          18.6               190
+## 6      Adelie Torgersen           39.3          20.6               190
+## 2      Adelie Torgersen           39.5          17.4               186
+## 31     Adelie     Dream           39.5          16.7               178
+## 33     Adelie     Dream           39.5          17.8               188
+## 46     Adelie     Dream           39.6          18.8               190
+## 51     Adelie    Biscoe           39.6          17.7               186
+## 73     Adelie Torgersen           39.6          17.2               196
+## 94     Adelie     Dream           39.6          18.1               186
+## 115    Adelie    Biscoe           39.6          20.7               191
+## 72     Adelie Torgersen           39.7          18.4               190
+## 106    Adelie    Biscoe           39.7          18.9               184
+## 113    Adelie    Biscoe           39.7          17.7               193
+## 140    Adelie     Dream           39.7          17.9               193
+## 40     Adelie     Dream           39.8          19.1               184
+## 52     Adelie    Biscoe           40.1          18.9               188
+## 123    Adelie Torgersen           40.2          17.0               176
+## 138    Adelie     Dream           40.2          20.1               200
+## 141    Adelie     Dream           40.2          17.1               193
+## 3      Adelie Torgersen           40.3          18.0               195
+## 98     Adelie     Dream           40.3          18.5               196
+## 28     Adelie    Biscoe           40.5          17.9               187
+## 30     Adelie    Biscoe           40.5          18.9               180
+## 27     Adelie    Biscoe           40.6          18.6               183
+## 58     Adelie    Biscoe           40.6          18.8               193
+## 126    Adelie Torgersen           40.6          19.0               199
+## 142    Adelie     Dream           40.6          17.2               187
+## 144    Adelie     Dream           40.7          17.0               190
+## 42     Adelie     Dream           40.8          18.4               195
+## 96     Adelie     Dream           40.8          18.9               208
+## 34     Adelie     Dream           40.9          18.9               184
+## 77     Adelie Torgersen           40.9          16.8               191
+## 163    Gentoo    Biscoe           40.9          13.7               214
+## 307 Chinstrap     Dream           40.9          16.6               187
+## 102    Adelie    Biscoe           41.0          20.0               203
+## 13     Adelie Torgersen           41.1          17.6               182
+## 47     Adelie     Dream           41.1          19.0               182
+## 64     Adelie    Biscoe           41.1          18.2               192
+## 68     Adelie    Biscoe           41.1          19.1               188
+## 92     Adelie     Dream           41.1          18.1               205
+##     body_mass_g    sex year
+## 143        3050 female 2009
+## 99         2900 female 2008
+## 71         3600 female 2008
+## 93         3400 female 2008
+## 9          3475   &lt;NA&gt; 2007
+## 19         3325 female 2007
+## 55         2900 female 2008
+## 15         4400   male 2007
+## 81         3200 female 2008
+## 53         3450 female 2008
+## 101        3725 female 2009
+## 84         4200   male 2008
+## 125        3050 female 2009
+## 26         3800 female 2007
+## 67         3350 female 2008
+## 75         3700 female 2008
+## 137        3175 female 2009
+## 61         3150 female 2008
+## 91         3550 female 2008
+## 119        3350 female 2009
+## 23         3800 female 2007
+## 69         3050 female 2008
+## 43         3100 female 2007
+## 49         3450 female 2007
+## 149        3450 female 2009
+## 151        3700 female 2009
+## 79         3550 female 2008
+## 95         3300 female 2008
+## 121        3150 female 2009
+## 87         3800   male 2008
+## 35         3325 female 2007
+## 65         2850 female 2008
+## 41         3150 female 2007
+## 59         2850 female 2008
+## 16         3700 female 2007
+## 148        3475 female 2009
+## 5          3450 female 2007
+## 83         3800 female 2008
+## 133        3500 female 2009
+## 88         3500 female 2008
+## 45         3000 female 2007
+## 139        3400 female 2009
+## 32         3900   male 2007
+## 78         3900   male 2008
+## 85         3350 female 2008
+## 118        3775   male 2009
+## 145        3000 female 2009
+## 48         2975   &lt;NA&gt; 2007
+## 134        4475   male 2009
+## 39         3300 female 2007
+## 60         3750   male 2008
+## 63         3600 female 2008
+## 22         3600   male 2007
+## 103        3075 female 2009
+## 122        3500   male 2009
+## 11         3300   &lt;NA&gt; 2007
+## 12         3700   &lt;NA&gt; 2007
+## 21         3400 female 2007
+## 104        4250   male 2009
+## 150        3750   male 2009
+## 29         3150 female 2007
+## 105        2925 female 2009
+## 97         3700 female 2008
+## 109        3175 female 2009
+## 111        3825 female 2009
+## 135        3425 female 2009
+## 24         3950   male 2007
+## 108        3900   male 2009
+## 89         3950   male 2008
+## 131        3325 female 2009
+## 14         3800   male 2007
+## 107        3750 female 2009
+## 117        2900 female 2009
+## 17         3450 female 2007
+## 25         3800   male 2007
+## 37         3950   male 2007
+## 127        3275 female 2009
+## 7          3625 female 2007
+## 90         3600 female 2008
+## 57         3550 female 2008
+## 129        3050 female 2009
+## 146        3650   male 2009
+## 1          3750   male 2007
+## 8          4675   male 2007
+## 36         4150   male 2007
+## 147        4250   male 2009
+## 6          3650   male 2007
+## 2          3800 female 2007
+## 31         3250 female 2007
+## 33         3300 female 2007
+## 46         4600   male 2007
+## 51         3500 female 2008
+## 73         3550 female 2008
+## 94         4450   male 2008
+## 115        3900 female 2009
+## 72         3900   male 2008
+## 106        3550   male 2009
+## 113        3200 female 2009
+## 140        4250   male 2009
+## 40         4650   male 2007
+## 52         4300   male 2008
+## 123        3450 female 2009
+## 138        3975   male 2009
+## 141        3400 female 2009
+## 3          3250 female 2007
+## 98         4350   male 2008
+## 28         3200 female 2007
+## 30         3950   male 2007
+## 27         3550   male 2007
+## 58         3800   male 2008
+## 126        4000   male 2009
+## 142        3475   male 2009
+## 144        3725   male 2009
+## 42         3900   male 2007
+## 96         4300   male 2008
+## 34         3900   male 2007
+## 77         3700 female 2008
+## 163        4650 female 2007
+## 307        3200 female 2008
+## 102        4725   male 2009
+## 13         3200 female 2007
+## 47         3425   male 2007
+## 64         4050   male 2008
+## 68         4100   male 2008
+## 92         4300   male 2008
+##  [ reached 'max' / getOption("max.print") -- omitted 219 rows ]
+```
+
+]
+
+]
+
+---
+# `aggregate()` 함수를 사용한 정보 서머리
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+### 특정 카테고리 별 수치 요약
+
+* `aggregate(formula, data, FUN)`
+
+* 수치변수 ~ 카테고리컬 변수
+
+* `+` 연산자와 `.` 연산자 사용가능
+
+]
+.pull-right[
+
+* 펭귄 종류별 부리길이
+
+
+```r
+aggregate(bill_length_mm ~ species, 
+          data = df_penguins, 
+          mean)
+```
+
+```
+##     species bill_length_mm
+## 1    Adelie       38.79139
+## 2 Chinstrap       48.83382
+## 3    Gentoo       47.50488
+```
+
+
+]
+
+]
+
+---
+class: inverse, middle, center
+
+# 다음시간
+
+&lt;img src="https://image.flaticon.com/icons/png/512/485/485339.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+## 범주형(Factor) 변수
+
+---
+## 참고자료 및 사용교재
+
+[1] [The art of R programming](https://amzn.to/3hHrsAp)
+
+* R 공부하시는 분이면 꼭 한번 보셔야하는 책입니다.
+
+* 위 교재의 한글 번역본 [빅데이터 분석 도구 R 프로그래밍](https://coupa.ng/b27BSI)도 있습니다. 도서 제목 클릭하셔서 구매하시면 저의 .red[사리사욕]을 충당하는데 도움이 됩니다.
+
+[2] [how to download and display an image from an URL in R?](https://stackoverflow.com/questions/29110903/how-to-download-and-display-an-image-from-an-url-in-r)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<!--Hat-tip: https://www.garrickadenbuie.com/blog/xaringan-tip-logo-all-slides/-->
+<style>
+.logo {
+  background-image: url(img/logo-blue.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

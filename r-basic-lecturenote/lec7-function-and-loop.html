@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>.blue[R] 프로그래밍 기초다지기</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Issac Lee" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link rel="stylesheet" href="css/statisticsplaybook.css" type="text/css" />
+    <link rel="stylesheet" href="css/statisticsplaybook-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, left, top
+
+# .blue[R] 프로그래밍 기초다지기
+----
+## **7강 - 사용자 정의 함수와 루프(Loop)**
+### [슬기로운통계생활](https://www.youtube.com/c/statisticsplaybook)
+### Issac Lee
+
+
+---
+class: inverse, middle, center
+
+# .blue[사용자 함수](Function)와 .red[루프] (Loops)
+
+&lt;img src="https://image.flaticon.com/icons/png/512/2452/2452668.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+---
+# R 프로그래밍의 구조
+
+.left-column[
+
+]
+.right-column[
+### 블록 구조
+
+.pull-left[
+* R은 C, C++, Python, Perl 과 같은 블록 구조 (block-structured) 프로그래밍 언어 중 하나.
+
+* `{}`를 사용하여 블록을 구분
+
+* 블록 안에 여러개의 구문들 (statements) 이 존재
+
+* 구문들은 줄 바꿈 혹은 세미 콜론 `;` 으로 구분
+
+]
+.pull-right[
+
+```r
+a &lt;- 3
+b &lt;- 2
+a; b # 2개 statements
+```
+
+```
+## [1] 3
+```
+
+```
+## [1] 2
+```
+
+]
+
+]
+
+---
+# 사용자 함수 정의
+
+.left-column[
+
+]
+.right-column[
+### 선언 방법
+
+* `function()` 함수를 사용하여 정의
+
+* 함수의 입력값 (argument)과 내용 (body) 을 정의해줘야 함.
+
+* 구문
+
+
+```r
+function_name &lt;- function(input) {
+*  # body part
+*  result &lt;- input + 1
+*  return(result)
+}
+```
+
+]
+
+---
+# R의 모든 것은 `Object`
+
+.left-column[
+
+]
+.right-column[
+
+
+.pull-left[
+
+### 함수 역시 객체 (Object)
+
+
+```r
+g &lt;- function(x) {
+  return(x + 1)
+}
+class(g)
+```
+
+```
+## [1] "function"
+```
+
+* 입력값을 넣으면 결과값을 뱉어내는 객체
+
+
+```r
+g(3)
+```
+
+```
+## [1] 4
+```
+
+
+]
+.pull-right[
+* 함수 `g`의 입력값과 내용 접근
+
+
+```r
+formals(g)
+```
+
+```
+## $x
+```
+
+```r
+body(g)
+```
+
+```
+## {
+##     return(x + 1)
+## }
+```
+
+]
+
+
+]
+
+---
+# 함수의 내용 출력 (Printing)
+
+.left-column[
+
+]
+.right-column[
+### 정의된 함수 내용확인
+
+.pull-left[
+
+* 그냥 함수 이름만 치고 돌리면 됨.
+
+
+```r
+g
+```
+
+```
+## function(x) {
+##   return(x + 1)
+## }
+```
+
+* `abline` 함수는 어떻게 생겼을까?
+
+]
+.pull-right[
+
+* R의 함수들 중에서 fundarmental 한 함수의 경우는 안보임
+
+* 보통 R 기반 함수 (`.Primitive`) 들 C로 짜여짐
+
+
+```r
+sum
+```
+
+```
+## function (..., na.rm = FALSE)  .Primitive("sum")
+```
+
+]
+
+]
+
+---
+# 함수 기본 입력값 설정
+
+.left-column[
+
+]
+.right-column[
+
+### 입력값 설정에 따른 함수 결과
+
+.pull-left[
+
+* 기본 입력값 정의가 안된 경우 
+
+
+```r
+g &lt;- function(x) {
+  result &lt;- x + 1
+  return(result)
+}
+g()
+```
+
+```
+## Error in g(): 기본값이 없는 인수 "x"가 누락되어 있습니다
+```
+
+]
+.pull-right[
+
+* 기본 입력값 설정 후
+
+
+```r
+g &lt;- function(x = 3) {
+  result &lt;- x + 1
+  return(result)
+}
+g()
+```
+
+```
+## [1] 4
+```
+
+]
+
+]
+
+---
+# 결과값 반환 함수 `return()`
+
+.left-column[
+
+]
+.right-column[
+
+### R의 스타일 가이드
+
+.pull-left[
+* R의 함수는 자동으로 마지막 구문을 결과값으로 반환하게 되어있음.
+
+* `tidyverse` [스타일 가이드](https://style.tidyverse.org/functions.html)에 따르면 `return()` 함수의 경우 early return의 경우에만 사용을 권장함.
+
+]
+.pull-right[
+
+
+```r
+# Good
+find_abs &lt;- function(x) {
+  if (x &gt; 0) {
+    return(x)
+  }
+  -1 * x
+}
+
+# Bad
+add_two &lt;- function(x, y) {
+  return(x + y)
+}
+```
+
+]
+
+]
+
+---
+# 함수 이름 정할 때 유의사항
+
+.left-column[
+
+]
+.right-column[
+
+### snake case
+
+.pull-left[
+
+
+* 변수와 함수 이름은 무조건 영어 소문자, 숫자, 그리고 밑줄 `_` 만을 사용
+
+* 함수 이름에 `.` 사용하는 것은 추후 배울 OOP를 사용해서 코딩을 할 때 혼란을 초래할 수 있음.
+
+* 함수 이름의 경우 동사를 먼저 사용
+
+* 변수 이름은 명사를 사용
+
+]
+.pull-right[
+
+* 좋은 함수 이름 예시
+
+
+```r
+# Good
+add_two()
+
+# Bad
+AddTwo()
+number_adder()
+```
+
+]
+
+]
+
+---
+# 유용한 조건문 `if` and `ifelse`
+
+.left-column[
+
+]
+.right-column[
+
+### 꼭 알아둘 것
+
+.pull-left[
+
+* `if ... else ...` 구문
+
+
+```r
+if (condition) {
+  statement 1
+} else {
+  statement 2
+}
+```
+
+* `ifelse()` 함수
+
+
+```r
+ifelse(test, yes, no)
+```
+
+
+]
+.pull-right[
+
+* 예제
+
+
+```r
+x &lt;- 3; y &lt;- 0
+if (x &gt; 4) {
+    y &lt;- 1  
+} else {
+    y &lt;- 2
+}
+y
+```
+
+```
+## [1] 2
+```
+
+
+]
+
+]
+
+---
+# 조건 3개 이상의 경우 `switch()`
+
+.left-column[
+
+]
+.right-column[
+### 알아두기만 하고 찾아볼 것
+
+
+```r
+x &lt;- 1; y &lt;- 2; input &lt;- "good"
+switch(  
+    input,  
+    "good"= cat("score =", x + y),  
+    "normal"= cat("score =", 2 * x),  
+    "bad"= cat("score = ", -y)
+)
+```
+
+```
+## score = 3
+```
+
+]
+
+---
+# 반복되는 작업을 쉽게 `Loops`
+
+.left-column[
+
+]
+.right-column[
+
+### 꼭 알아야하는 루프 2개
+
+.pull-left[
+* `for` 문
+
+
+```r
+x &lt;- 1:3
+for (i in x) {
+  print(paste("Here is", i))
+}
+```
+
+```
+## [1] "Here is 1"
+## [1] "Here is 2"
+## [1] "Here is 3"
+```
+
+* 루프에 목 매지 마세요.
+
+]
+.pull-right[
+* `while` &amp; `break` 문
+
+
+```r
+i &lt;- 1
+while (TRUE) {
+  i &lt;- i + 3
+  if (i &gt; 10) break
+  print(i)
+}
+```
+
+```
+## [1] 4
+## [1] 7
+## [1] 10
+```
+
+]
+
+
+]
+
+---
+# `apply()` 함수 완벽 정복
+
+.left-column[
+
+]
+.right-column[
+### 행렬과 배열을 사용한 루프
+
+.pull-left[
+* 구문: `apply(object, direction, function)`
+
+* `direction`: 함수 적용방향
+
+  * 1: 행 (row) 별 입력
+  
+  * 2: 열 (column) 별 입력
+
+]
+.pull-right[
+
+```r
+a &lt;- matrix(1:12, 
+                nrow = 3, 
+                ncol = 4)
+a
+```
+
+```
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    4    7   10
+## [2,]    2    5    8   11
+## [3,]    3    6    9   12
+```
+
+]
+
+]
+
+---
+# 함수 적용
+
+.left-column[
+
+]
+.right-column[
+
+* 함수 적용방향에 따른 결과 값 이해
+
+&lt;img src="./img/apply.jpg" width="100%" /&gt;
+
+.pull-left[
+
+```
+## [1] 10 11 12
+```
+
+]
+.pull-right[
+
+```
+## [1]  3  6  9 12
+```
+
+]
+
+]
+
+---
+# 사용자 함수를 사용한 apply()
+
+.left-column[
+
+]
+.right-column[
+
+### 사용자 함수
+
+.pull-left[
+
+* 맨 마지막 인풋을 사용자 정의 함수로 설정이 가능함.
+
+]
+.pull-right[
+
+
+```r
+my_f &lt;- function(vec){ 
+    max(vec)^2 + 3
+}
+apply(a, 1, my_f)
+```
+
+```
+## [1] 103 124 147
+```
+
+]
+
+
+]
+
+---
+# 3차원 배열에 `apply()` 함수 적용
+
+.left-column[
+
+]
+.right-column[
+
+
+.pull-left[
+
+* `apply()`는 배열을 입력값으로 받을 수 있음
+
+* 3차원 배열의 경우 함수 적용 방향이 3개
+
+
+```r
+array_3d &lt;- array(1:24, 
+                  dim = c(3,4,2))
+array_3d
+```
+
+]
+.pull-right[
+
+
+```
+## , , 1
+## 
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    4    7   10
+## [2,]    2    5    8   11
+## [3,]    3    6    9   12
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3] [,4]
+## [1,]   13   16   19   22
+## [2,]   14   17   20   23
+## [3,]   15   18   21   24
+```
+
+
+]
+
+
+
+]
+
+---
+# 3차원 배열
+
+.left-column[
+
+]
+.right-column[
+
+### 우리가 만든 3차원 배열
+
+.pull-left[
+&lt;img src="./img/array3d.jpg" width="100%" /&gt;
+
+]
+.pull-right[
+
+* 방향 1은 어떻게 적용이 된 걸까?
+
+
+```r
+apply(array_3d, 1, max)
+```
+
+```
+## [1] 22 23 24
+```
+
+]
+
+]
+
+---
+# 3차원 배열의 3가지 방향
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+* 방향 1
+
+`apply(array_3d, 1, max)`
+
+&lt;img src="./img/array3d-1.jpg" width="100%" /&gt;
+
+]
+.pull-right[
+
+* 방향 2
+
+`apply(array_3d, 2, max)`
+
+&lt;img src="./img/array3d-2.jpg" width="80%" /&gt;
+
+]
+
+Q. 마지막 방향 `apply(array_3d, 3, max)`의 결과는?
+
+]
+
+---
+# 함수와 환경
+
+.left-column[
+
+]
+.right-column[
+### 함수에는 대응하는 환경이 따로 존재
+
+.pull-left[
+
+* .blue[**R**] 함수의 구성요소
+
+  * 입력값 (arguments)
+  * 내용 (body)
+  * **환경 (environment)**
+
+* 함수가 만들어 질 때 존재하는 객체들 모음
+
+* Global 환경에 존재하는 변수 `y`와 `my_f()` 안에 존재하는 `y`는 **다른 환경**에 같은 이름을 가진 변수
+
+]
+.pull-right[
+
+```r
+y &lt;- 2
+my_f &lt;- function(x) {
+  y &lt;- 1
+  result &lt;- x + y
+  result
+}
+y
+```
+
+```
+## [1] 2
+```
+
+]
+]
+
+---
+# R 환경의 계층 구조
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+### 함수 안에 함수 있다.
+
+* top-level인 `Global Env.` 에 정의된 `outer_f()`
+
+
+```r
+outer_f &lt;- function() {
+  inner_f &lt;- function(input) {
+    input + 2
+  }
+  
+  # check env of inner_f()
+  print(environment(inner_f))
+}
+```
+
+]
+.pull-right[
+
+
+```r
+environment(outer_f)
+```
+
+```
+## &lt;environment: R_GlobalEnv&gt;
+```
+
+* `inner_f()`의 환경은 `outer_f()`에서 접근가능
+
+
+```r
+outer_f()
+```
+
+```
+## &lt;environment: 0x0000000013169c98&gt;
+```
+
+]
+
+
+]
+
+---
+# `&lt;&lt;-` 연산자와 환경구조
+
+.left-column[
+
+]
+.right-column[
+
+### 상위 환경과의 교류
+
+.pull-left[
+
+* `my_f()`에 묶여있는 환경이 아닌 상위 환경에 접근 가능
+
+
+```r
+y &lt;- 2
+my_f &lt;- function() {
+  y &lt;&lt;- 1
+}
+```
+
+]
+.pull-right[
+
+```r
+y
+```
+
+```
+## [1] 2
+```
+
+```r
+my_f()
+y
+```
+
+```
+## [1] 1
+```
+
+]
+
+]
+
+---
+class: inverse, middle, center
+
+# 다음시간
+
+&lt;img src="https://image.flaticon.com/icons/png/512/773/773228.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+## .red[문자열](String) 다루기와 .blue[시각화]
+
+---
+## 참고자료 및 사용교재
+
+[1] [The art of R programming](https://amzn.to/3hHrsAp)
+
+* R 공부하시는 분이면 꼭 한번 보셔야 하는 책입니다.
+
+* 위 교재의 한글 번역본 [빅데이터 분석 도구 R 프로그래밍](https://coupa.ng/b27BSI)도 있습니다. 도서 제목 클릭하셔서 구매하시면 저의 .red[사리사욕]을 충당하는데 도움이 됩니다.
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<!--Hat-tip: https://www.garrickadenbuie.com/blog/xaringan-tip-logo-all-slides/-->
+<style>
+.logo {
+  background-image: url(img/logo-blue.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

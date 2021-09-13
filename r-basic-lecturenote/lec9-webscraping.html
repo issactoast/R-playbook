@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>.blue[R] 프로그래밍 기초다지기</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Issac Lee" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link rel="stylesheet" href="css/statisticsplaybook.css" type="text/css" />
+    <link rel="stylesheet" href="css/statisticsplaybook-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, left, top
+
+# .blue[R] 프로그래밍 기초다지기
+----
+## **9강 - 웹 스크래핑을 통한 나만의 데이터 만들기**
+### [슬기로운통계생활](https://www.youtube.com/c/statisticsplaybook)
+### Issac Lee
+
+
+---
+class: inverse, middle, center
+
+# .blue[데이터 스크래핑](Scraping)
+
+&lt;img src="https://image.flaticon.com/icons/png/512/2228/2228157.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+---
+# 데이터 스크래핑이란
+
+.left-column[
+
+]
+.right-column[
+
+### 정보의 가공 및 추출
+
+* 여러 형태의 자료에서 원하는 정보만을 **쏙쏙 빼와서** 새로운 형태의 데이터를 만드는 과정
+
+* 크롤링이랑 **다른** 개념 
+
+  * 크롤링이란 엄청나게 큰 네트워크를 어떻게 효율적으로 전부 다 수집할 것인지에 대한 이야기
+
+]
+
+
+---
+# 웹 스크래핑의 예
+
+.left-column[
+
+]
+.right-column[
+### 제품 이름만 쏙 골라 넣기
+
+* 제품 정보를 추출 후 데이터 프레임으로 만들고 싶을 때
+
+.pull-left[
+
+&lt;img src="./img/cheesedotcom.png" width="100%" /&gt;
+
+
+]
+.pull-right[
+
+
+|cheese               |
+|:--------------------|
+|Abertam              |
+|Acorn                |
+|Affineur             |
+|Aged British Cheddar |
+|Aged Gouda           |
+|Aggiano              |
+
+]
+
+]
+
+---
+# 주의할 점
+
+.left-column[
+
+]
+.right-column[
+
+### 지적 재산권 침해 요소
+
+* 내가 스크랩하는 정보가 다른 사람의 재산은 아닌가?
+
+  * 웹에는 특정 정보를 사용해서 사업을 하는 경우가 많음
+
+  * 숙박업소, 제품 판매 사이트 (가격 정보)
+  
+* 스크랩이 허용된 정보인가?
+  
+  * `robots.txt` 확인
+
+* 나의 스크랩 활동이 사이트의 트래픽에 영향을 주지는 않는가?
+  
+]
+
+---
+# 비장의 무기 (a.k.a. 준비물)
+
+.left-column[
+
+]
+.right-column[
+### 크롬 확장 프로그램
+
+.pull-left[
+* [SelectorGadget](https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb)
+
+  * 웹 사이트에서 특정 부분의 내용이 어떤 태그에 물려있는지 알려주는 도구
+
+  * `rvest` 패키지와 궁합이 너무 좋음. 
+]
+.pull-right[
+&lt;img src="https://lh3.googleusercontent.com/KgM6zxhwYCf-5njZWJPtrmF4DCWJx6EzzHcSNMgoFmIIezyb4VY55ibfK9bRMA23ItntbuYOH-d0zflZ54yr0A4Oqg=w128-h128-e365-rj-sc0x00ffffff" width="55%" /&gt;
+]
+
+]
+
+---
+# 사용 패키지
+
+.left-column[
+
+]
+.right-column[
+### `rvest` 패키지
+
+.pull-left[
+
+
+```r
+# install.packages("rvest")
+library(rvest)
+```
+
+* Easily Harvest (Scrape) Web Pages
+
+* 여러 페이지를 스크랩 할 때 [`polite`](https://dmi3kno.github.io/polite/) 패키지를 꼭 같이 사용할 것.
+
+]
+.pull-right[
+&lt;img src="https://github.com/tidyverse/rvest/raw/master/man/figures/logo.png" width="50%" style="display: block; margin: auto;" /&gt;
+]
+
+]
+
+---
+# `rvest` 사용법
+
+.left-column[
+
+]
+.right-column[
+### 주요 함수들
+
+* `read_html()`: 웹 페이지 읽어오기
+
+* `html_elements()`: 특정 요소에 해당하는 내용 추출하기
+
+* `html_attr()`: 특정 태그에 해당하는 값 추출하기
+
+* `html_text()`: 추출한 내용 텍스트로 바꾸기
+
+]
+
+---
+# `issaclee.com` 웹 페이지 접근
+
+.left-column[
+
+]
+.right-column[
+### 기초 통계 사이트 목차 가져오기
+
+* https://www.theissaclee.com/ko/courses/rstat101/
+
+* 오른쪽 클릭 &gt; 페이지 소스보기
+
+
+```r
+url &lt;- "https://www.theissaclee.com/ko/courses/rstat101/"
+web_page &lt;- read_html(url)
+print(web_page)
+```
+
+```
+## {html_document}
+## &lt;html lang="ko"&gt;
+## [1] &lt;head&gt;\n&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8 ...
+## [2] &lt;body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfCo ...
+```
+
+]
+
+---
+# 목차 태그 접근
+
+.left-column[
+
+]
+.right-column[
+
+* 셀렉터 가젯을 통해서 태그 추출하기
+
+  * 원하는 부분 클릭 후, 원하지 않는 부분 클릭으로 빨간색 처리
+  
+
+```r
+chapter_name &lt;- web_page |&gt;
+    html_elements(".docs-sidenav a") |&gt;
+    html_text()
+head(chapter_name)
+```
+
+```
+## [1] "Week 1 - R 기초 및 데이터 불러오기" "Week 2 - 데이터 시각화"            
+## [3] "Week 3 - 분포를 나타내는 지표"      "Week 4 - 데이터 다루기"            
+## [5] "Week 5 - 상관계수"                  "Week 6 - 회귀분석 기초"
+```
+
+]
+
+---
+# `transfermarkt.com` 스크랩핑
+
+.left-column[
+
+]
+.right-column[
+### 스크랩이 가능한가?
+
+* `google.com/robots.txt` 내용을 확인해보자.
+
+* `transfermarkt.com/robots.txt` 주소로 접근
+    
+    스크랩 가능 확인
+    
+    * User-agent: *
+    * Allow: /
+
+]
+
+---
+# 선수 이름 따오기
+
+.left-column[
+
+]
+.right-column[
+
+### Most valuable player 페이지
+
+* 선수 이름과 연관된 태그 선택
+
+
+```r
+url &lt;- "https://www.transfermarkt.com/spieler-statistik/wertvollstespieler/marktwertetop"
+web_page &lt;- read_html(url)
+
+player_name &lt;- web_page |&gt;
+    html_elements("#yw1 .spielprofil_tooltip") |&gt;
+    html_text()
+head(player_name)
+```
+
+```
+## [1] "Kylian Mbappe"  "Erling Haaland" "Harry Kane"     "Jadon Sancho"  
+## [5] "Mohamed Salah"  "Romelu Lukaku"
+```
+
+
+]
+
+---
+# 국가 정보 가져오기
+
+.left-column[
+
+]
+.right-column[
+### 태그를 이용한 정보 추출
+
+* 태그 정보에 국가 정보가 들어있는 것을 확인하자.
+
+  * 태그 정보를 꺼내올 땐 `html_attr()`
+
+
+```r
+national &lt;- web_page |&gt;
+    html_elements(".flaggenrahmen") |&gt;
+    html_attr("title")
+
+head(national)
+```
+
+```
+## [1] "France"  "Norway"  "England" "England" "Egypt"   "Belgium"
+```
+
+```r
+print(national[6], width = 1000)
+```
+
+```
+## [1] "Belgium"
+```
+
+]
+
+---
+# 클럽정보 가져오기
+
+.left-column[
+
+]
+.right-column[
+
+```r
+club_name &lt;- web_page |&gt;
+    html_elements("#yw1 .vereinprofil_tooltip") |&gt; 
+    html_children() |&gt; 
+    html_attr("alt")
+head(club_name)
+```
+
+```
+## [1] "Paris Saint-Germain" "Borussia Dortmund"   "Tottenham Hotspur"  
+## [4] "Manchester United"   "Liverpool FC"        "Chelsea FC"
+```
+
+]
+
+---
+# 선수 나이 가져오기
+
+.left-column[
+
+]
+.right-column[
+
+
+```r
+player_age &lt;- web_page |&gt;
+    html_elements("#yw1 .zentriert:nth-child(3)") |&gt; 
+    html_text()
+player_age &lt;- player_age[-1] |&gt; as.integer()
+head(player_age)
+```
+
+```
+## [1] 22 21 28 21 29 28
+```
+
+]
+
+---
+# 포지션 정보 가져오기
+
+.left-column[
+
+]
+.right-column[
+
+
+```r
+position &lt;- web_page |&gt;
+    html_elements(".inline-table tr+ tr td") |&gt; 
+    html_text()
+head(position)
+```
+
+```
+## [1] "Centre-Forward" "Centre-Forward" "Centre-Forward" "Right Winger"  
+## [5] "Right Winger"   "Centre-Forward"
+```
+
+]
+
+---
+# Market value 가져오기
+
+.left-column[
+
+]
+.right-column[
+
+### 정규 표현식의 파워
+
+
+```r
+# install.packages("stringr")
+library("stringr")
+market_value &lt;- web_page |&gt;
+    html_elements("#yw1 b") |&gt; 
+    html_text() |&gt; 
+    str_extract("\\d+[.]\\d\\d")
+head(market_value)
+```
+
+```
+## [1] "160.00" "130.00" "120.00" "100.00" "100.00" "100.00"
+```
+
+```r
+length(market_value)
+```
+
+```
+## [1] 25
+```
+
+
+]
+
+---
+# 데이터 프레임으로 만들어 저장하기
+
+.left-column[
+
+]
+.right-column[
+
+* `national` 변수: 중복 국적 처리
+
+* 데이터 프레임으로 만든 후 `write.csv()` 함수를 사용하여 저장
+
+
+
+```r
+soccer_data &lt;- data.frame(
+    name = player_name,
+    age = player_age,
+    position = position,
+    nationality = national[-c(7, 13, 22)],
+    club = club_name,
+    market_value = market_value
+)
+write.csv(soccer_data, 
+          file = "./data/soccer.csv",
+          row.names = FALSE,
+          fileEncoding = "UTF-8")
+```
+
+]
+
+---
+# 중간 데이터 점검
+
+.left-column[
+
+]
+.right-column[
+
+```r
+head(soccer_data)
+```
+
+```
+##             name age       position nationality                club
+## 1  Kylian Mbappe  22 Centre-Forward      France Paris Saint-Germain
+## 2 Erling Haaland  21 Centre-Forward      Norway   Borussia Dortmund
+## 3     Harry Kane  28 Centre-Forward     England   Tottenham Hotspur
+## 4   Jadon Sancho  21   Right Winger     England   Manchester United
+## 5  Mohamed Salah  29   Right Winger       Egypt        Liverpool FC
+## 6  Romelu Lukaku  28 Centre-Forward     Belgium          Chelsea FC
+##   market_value
+## 1       160.00
+## 2       130.00
+## 3       120.00
+## 4       100.00
+## 5       100.00
+## 6       100.00
+```
+
+]
+
+---
+# 중복데이터는 어떻게 할까?
+
+.left-column[
+
+]
+.right-column[
+
+* 테이블로 선택자를 잡아서 내용이 몇개가 있는지 세어보자.
+
+
+```r
+national2 &lt;- web_page |&gt;
+    html_elements("#yw1 .zentriert:nth-child(4)")
+national2 &lt;- national2[-1]
+
+html_children(national2[6]) |&gt; length()
+```
+
+```
+## [1] 3
+```
+
+```r
+count_dup &lt;- sapply(national2,
+                    \(x) length(html_children(x)))
+which(count_dup == 3)
+```
+
+```
+## [1]  6 12 21
+```
+
+
+]
+
+---
+# `childeren`와 `attr` 콤보를 사용한 추출
+
+.left-column[
+
+]
+.right-column[
+
+```r
+result &lt;- sapply(national2, 
+       \(x) html_attr(html_children(x)[1], "alt"))
+head(result)
+```
+
+```
+## [1] "France"  "Norway"  "England" "England" "Egypt"   "Belgium"
+```
+
+```r
+length(result)
+```
+
+```
+## [1] 25
+```
+
+]
+
+---
+# 여러 페이지 추출하기
+
+.left-column[
+
+]
+.right-column[
+### 2페이지 주소 알아내기
+
+* 오른쪽 클릭 &gt; 링크 주소 복사
+
+* 주소 + "?page=number" 구조
+
+
+```r
+base_url &lt;- "https://www.transfermarkt.com/spieler-statistik/wertvollstespieler/marktwertetop?page="
+url &lt;- paste0(base_url, 1:3)
+url |&gt; substr(50, nchar(url))
+```
+
+```
+## [1] "ertvollstespieler/marktwertetop?page=1"
+## [2] "ertvollstespieler/marktwertetop?page=2"
+## [3] "ertvollstespieler/marktwertetop?page=3"
+```
+
+
+]
+
+---
+# `lapply()`를 사용한 여러 페이지 스크래핑
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+
+* `lapply()` 후에 `unlist()`로 벡터로 받음.
+
+
+```r
+twopage_scraping &lt;- function(url) {
+    Sys.sleep(1)
+    web_page &lt;- read_html(url)
+
+    player_name &lt;- web_page |&gt;
+        html_elements("#yw1 .spielprofil_tooltip") |&gt;
+        html_text()
+    player_name
+}
+```
+
+]
+.pull-right[
+
+```r
+result &lt;- lapply(url, twopage_scraping)
+player_name &lt;- unlist(result)
+length(player_name)
+```
+
+```
+## [1] 75
+```
+
+```r
+head(player_name)
+```
+
+```
+## [1] "Kylian Mbappe"  "Erling Haaland" "Harry Kane"     "Jadon Sancho"  
+## [5] "Mohamed Salah"  "Romelu Lukaku"
+```
+
+]
+]
+
+
+---
+class: inverse, middle, center
+
+# 완강!
+
+&lt;img src="https://image.flaticon.com/icons/png/512/1506/1506333.png" width="25%" style="display: block; margin: auto;" /&gt;
+
+## 기초 .blue[R] 프로그래밍 완강을 축하드립니다!
+
+---
+## 참고자료 및 사용교재
+
+[1] [The art of R programming](https://amzn.to/3hHrsAp)
+
+* R 공부하시는 분이면 꼭 한번 보셔야 하는 책입니다.
+
+* 위 교재의 한글 번역본 [빅데이터 분석 도구 R 프로그래밍](https://coupa.ng/b27BSI)도 있습니다. 도서 제목 클릭하셔서 구매하시면 저의 .red[사리사욕]을 충당하는데 도움이 됩니다.
+
+[2] [Web Scraping in R: Get Text from ANY Website](https://www.youtube.com/watch?v=v8Yh_4oE-Fs)
+
+* SelectorGadget을 소개시켜준 고마운 유튜버
+
+## 코스 홍보
+
+[1] [클래스101 기초 통계 강의](https://class101.app/e/issacstatistics_class)
+
+* 제가 하는 기초 통계강의. 통계를 대하는 여러분의 생각을 바꿔주는 기초 강의!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<!--Hat-tip: https://www.garrickadenbuie.com/blog/xaringan-tip-logo-all-slides/-->
+<style>
+.logo {
+  background-image: url(img/logo-blue.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

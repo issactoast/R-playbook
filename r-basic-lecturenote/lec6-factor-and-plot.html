@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>.blue[R] 프로그래밍 기초다지기</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Issac Lee" />
+    <script src="libs/header-attrs-2.9.5/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link rel="stylesheet" href="css/statisticsplaybook.css" type="text/css" />
+    <link rel="stylesheet" href="css/statisticsplaybook-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, left, top
+
+# .blue[R] 프로그래밍 기초다지기
+----
+## **6강 - 범주형 변수와 시각화**
+### [슬기로운통계생활](https://www.youtube.com/c/statisticsplaybook)
+### Issac Lee
+
+
+---
+class: inverse, middle, center
+
+# .red[Factor]를 배워보자. 
+
+&lt;img src="https://image.flaticon.com/icons/png/512/485/485339.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+---
+# 팩터 (Factor) 에 대하여
+
+.left-column[
+
+]
+.right-column[
+
+### 범주형 변수를 다루는 도구
+
+* 범주형 변수 (Categorical variable) 는 변수가 가질 수 있는 값이 한정된 변수 했었다. 
+
+* 벡터에 정보가 더 들어가 있는 개체로 볼 수 있음 
+
+
+```r
+x &lt;- c(1, 13, 5, 2, 1)
+x_factor &lt;- factor(x)
+x_factor
+```
+
+```
+## [1] 1  13 5  2  1 
+## Levels: 1 2 5 13
+```
+
+]
+
+---
+# 팩터를 구성하는 요소
+
+.left-column[
+
+]
+.right-column[
+
+
+.pull-left[
+### 벡터 (vector)와 레벨 (Level)
+
+* factor를 factor로 만드는 핵심 요소
+
+* 벡터에 레벨 정보를 입힌 것이 `factor`라고 생각할 수 있음
+
+* 미리 정의된 레벨 정보를 벡터로 참조하는 구조 
+
+]
+.pull-right[
+
+
+```r
+class(x_factor)
+```
+
+```
+## [1] "factor"
+```
+
+```r
+unclass(x_factor)
+```
+
+```
+## [1] 1 4 3 2 1
+## attr(,"levels")
+## [1] "1"  "2"  "5"  "13"
+```
+
+]
+
+]
+
+---
+# 팩터 (factor) 선언 방법
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### `factor()` 함수를 사용
+
+* 들어가는 내용과 레벨 정보를 입력
+
+* 레벨 값과 정보 값은 다를 수 있음
+
+  * 앞으로 들어올 레벨 값을 처음에 지정
+
+  * 이미 정의된 레벨에 해당하는 값만 넣을 수 있음. 
+
+]
+.pull-right[
+
+```r
+x
+```
+
+```
+## [1]  1 13  5  2  1
+```
+
+```r
+x_factor2 &lt;- factor(x, 
+    levels = c(1, 2, 5, 7, 13))
+x_factor2
+```
+
+```
+## [1] 1  13 5  2  1 
+## Levels: 1 2 5 7 13
+```
+
+]
+
+
+]
+
+---
+# 레벨 조정하기
+
+.left-column[
+
+]
+.right-column[
+### 기존 레벨을 수정
+
+.pull-left[
+
+```r
+x_factor
+```
+
+```
+## [1] 1  13 5  2  1 
+## Levels: 1 2 5 13
+```
+
+```r
+levels(x_factor)
+```
+
+```
+## [1] "1"  "2"  "5"  "13"
+```
+
+]
+.pull-right[
+
+```r
+levels(x_factor) &lt;- 
+  paste("school", 1:4)
+x_factor
+```
+
+```
+## [1] school 1 school 4 school 3 school 2 school 1
+## Levels: school 1 school 2 school 3 school 4
+```
+
+]
+
+
+]
+
+---
+# 순서가 존재할 때 (Ordered factor)
+
+.left-column[
+
+]
+.right-column[
+### 순위 변수 (Ordinal variables)
+
+* `나쁘다, 중간, 좋다.` 의 경우 순서가 존재함.
+
+* 이런 경우 레벨에 코딩을 같이 넣어줄 수 있음.
+
+
+```r
+con_vector &lt;- c("bad", "good", "soso", "good")
+x_factor3 &lt;- factor(con_vector, 
+                    levels = c("bad", "soso", "good"),
+                    ordered = TRUE)
+x_factor3
+```
+
+```
+## [1] bad  good soso good
+## Levels: bad &lt; soso &lt; good
+```
+
+]
+
+---
+# `tapply()` 함수와 팩터
+
+.left-column[
+
+]
+.right-column[
+
+### 팩터 레벨에 따른 함수 적용
+
+* 문법: `tapply(대상 벡터, 나누는 기준, 적용함수)`
+.pull-left[
+
+```r
+age &lt;- sample(20:60, 6)
+gender &lt;- sample(c("남자", "여자"), 
+                 6, replace = TRUE)
+age; gender
+```
+
+```
+## [1] 49 45 26 27 48 31
+```
+
+```
+## [1] "남자" "여자" "여자" "여자" "여자" "여자"
+```
+
+]
+.pull-right[
+
+```r
+tapply(age, gender, mean)
+```
+
+```
+## 남자 여자 
+## 49.0 35.4
+```
+
+]
+
+]
+
+---
+# `tapply()` 함수 응용
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 펭귄 종류별 부리 길이 계산
+
+* 2개 팩터도 가능
+
+* 문제: `aggregate()` 함수와의 차이점은?
+
+
+```r
+library(palmerpenguins)
+with(penguins, 
+     tapply(bill_length_mm, 
+            species, mean,
+            na.rm = TRUE))
+```
+
+```
+##    Adelie Chinstrap    Gentoo 
+##  38.79139  48.83382  47.50488
+```
+
+
+]
+.pull-right[
+
+
+
+```r
+with(penguins, 
+    tapply(bill_length_mm, 
+        list(species, island), 
+        mean, na.rm = TRUE))
+```
+
+```
+##             Biscoe    Dream Torgersen
+## Adelie    38.97500 38.50179  38.95098
+## Chinstrap       NA 48.83382        NA
+## Gentoo    47.50488       NA        NA
+```
+
+
+]
+
+
+]
+
+---
+# `split()` 함수를 사용한 데이터 쪼개기
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 데이터 나누기
+
+* 문법: `split(대상, 나누는 기준)`
+
+
+
+
+```r
+x_factor
+```
+
+```
+## [1] school 1 school 4 school 3 school 2 school 1
+## Levels: school 1 school 2 school 3 school 4
+```
+
+]
+.pull-right[
+
+```r
+split(1:5, x_factor)
+```
+
+```
+## $`school 1`
+## [1] 1 5
+## 
+## $`school 2`
+## [1] 4
+## 
+## $`school 3`
+## [1] 3
+## 
+## $`school 4`
+## [1] 2
+```
+
+]
+
+
+]
+
+---
+# `by()` 함수
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### `tapply()` vs. `by()`
+
+* `tapply()`의 첫 입력값은 항상 벡터
+
+* `by()`는 행렬이나 데이터 프레임이 와도 됨
+
+
+```r
+with(penguins, 
+     tapply(bill_length_mm, 
+            species, mean,
+            na.rm = TRUE))
+```
+
+
+]
+.pull-right[
+
+
+```r
+by(penguins, 
+  penguins$species,
+  function(df){ with(df, 
+      var(bill_length_mm,
+          bill_depth_mm, 
+          na.rm = TRUE)) }
+)
+```
+
+```
+## penguins$species: Adelie
+## [1] 1.268602
+## ----------------------------------------------------------------------- 
+## penguins$species: Chinstrap
+## [1] 2.477801
+## ----------------------------------------------------------------------- 
+## penguins$species: Gentoo
+## [1] 1.94558
+```
+
+]
+
+]
+
+
+---
+# 시각화 맛보기
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+### R plot 개념 이해
+
+* 레이어 개념으로 이루어짐
+
+
+```r
+plot(0, 0,
+     xlim = c(0, 10),
+     ylim = c(0, 20),
+     type = "n",
+     xlab = "x title",
+     ylab = "y title",
+     main = "main title")
+points(1:10, 1:10, col = "red")
+abline(a = 20, b = -2, 
+       lty = "dashed")
+```
+
+
+]
+.pull-right[
+![](lec6-factor-and-plot_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+
+]
+
+]
+
+---
+# 펭귄데이터 시각화
+
+.left-column[
+
+]
+.right-column[
+
+```r
+with(penguins,
+plot(bill_length_mm, 
+     bill_depth_mm,
+     col = c("red", "blue", "green")[as.factor(species)],
+     pch = c(16:18)[as.factor(species)],
+     main = "팔머 펭귄 종류별 부리길이 vs 깊이",
+     xlab = "부리 길이 (단위: mm)",
+     ylab = "부리 깊이 (단위: mm)",
+     cex = 1.5, # 점 크기
+     cex.main = 2, # 제목
+     cex.lab = 1.5, # 축 제목
+     cex.axis = 1.5) # 축 숫자
+)
+legend(33, 15, legend = c("Adelie", "Chinstrap", "Gentoo"),
+       col = c("red", "blue", "green"), 
+       pch = 16:18)
+```
+
+]
+
+---
+# 시각화 결과
+
+.left-column[
+
+]
+.right-column[
+&lt;img src="lec6-factor-and-plot_files/figure-html/unnamed-chunk-17-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+  
+]
+
+---
+# 종별 부리 길이 vs. 깊이
+
+.left-column[
+
+]
+.right-column[
+
+```r
+mean_points &lt;- 
+  aggregate(cbind(bill_length_mm, bill_depth_mm) ~ species, 
+          data = penguins,
+          mean)
+names(mean_points) &lt;- c("species", "x", "y")
+mean_points
+```
+
+```
+##     species        x        y
+## 1    Adelie 38.79139 18.34636
+## 2 Chinstrap 48.83382 18.42059
+## 3    Gentoo 47.50488 14.98211
+```
+
+]
+
+---
+# 주석 (Annotation)
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### text() 함수
+
+* 문법: `text(x, y, label)`
+
+* 각 종별 평균 부리 길이 및 깊이 표시
+
+
+```r
+text(mean_points[, c("x", "y")],
+     label = "X",
+     font = 2, # 굵게
+     cex = 2)  # 크기
+```
+
+
+]
+.pull-right[
+![](lec6-factor-and-plot_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+]
+
+]
+
+---
+class: inverse, middle, center
+
+# 다음시간
+
+&lt;img src="https://image.flaticon.com/icons/png/512/2452/2452668.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+## .blue[사용자 함수](Function)와 .red[루프] (Loops)
+
+---
+## 참고자료 및 사용교재
+
+[1] [The art of R programming](https://amzn.to/3hHrsAp)
+
+* R 공부하시는 분이면 꼭 한번 보셔야 하는 책입니다.
+
+* 위 교재의 한글 번역본 [빅데이터 분석 도구 R 프로그래밍](https://coupa.ng/b27BSI)도 있습니다. 도서 제목 클릭하셔서 구매하시면 저의 .red[사리사욕]을 충당하는데 도움이 됩니다.
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<!--Hat-tip: https://www.garrickadenbuie.com/blog/xaringan-tip-logo-all-slides/-->
+<style>
+.logo {
+  background-image: url(img/logo-blue.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

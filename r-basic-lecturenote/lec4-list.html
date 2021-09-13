@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>.blue[R] 프로그래밍 기초다지기</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Issac Lee" />
+    <script src="libs/header-attrs-2.9.5/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link rel="stylesheet" href="css/statisticsplaybook.css" type="text/css" />
+    <link rel="stylesheet" href="css/statisticsplaybook-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, left, top
+
+# .blue[R] 프로그래밍 기초다지기
+----
+## **4강 - 리스트 완벽 마스터**
+### [슬기로운통계생활](https://www.youtube.com/c/statisticsplaybook)
+### Issac Lee
+
+
+---
+class: inverse, middle, center
+
+# .red[List]를 배워보자. 
+
+&lt;img src="https://image.flaticon.com/icons/png/512/2666/2666505.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+---
+# 리스트(List)이란 무엇일까?
+
+.left-column[
+
+]
+.right-column[
+
+
+.pull-left[
+
+### 언제 사용할까?
+
+* 벡터의 경우 구성원들이 .red[모두 같은] 타입이여야 함.
+
+* 각기 다른 타입의 구성원을 가진 객체를 만들 수는 없을까?
+
+
+]
+.pull-right[
+
+
+```r
+as.vector(c(1, "test"))
+```
+
+```
+## [1] "1"    "test"
+```
+
+```r
+as.vector(c(1, TRUE))
+```
+
+```
+## [1] 1 1
+```
+
+```r
+as.vector(c(FALSE, TRUE))
+```
+
+```
+## [1] FALSE  TRUE
+```
+
+]
+
+]
+
+---
+# 리스트 (List) 만들기
+
+.left-column[
+
+]
+.right-column[
+
+
+.pull-left[
+### 장점
+
+* 여러개의 다른 객체들 (Objects)을 모아놓을 수 있음
+
+### 선언방법
+
+* `list()` 함수를 사용하여 선언
+
+* 각 구성원의 태그(tag)과 내용을 같이 설정해줌.
+
+]
+.pull-right[
+
+```r
+mylist &lt;- list(name = "issac",
+               id = 30096, 
+               order = c(1, 2))
+mylist
+```
+
+```
+## $name
+## [1] "issac"
+## 
+## $id
+## [1] 30096
+## 
+## $order
+## [1] 1 2
+```
+
+]
+
+]
+
+---
+# 벡터 vs. 리스트
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+### 공통점
+
+* 작은 구성원들을 모아놓은 객체
+
+* 리스트도 벡터의 한 종류
+
+### 차이점
+
+* `atomic vector` 
+
+  * 작은 구성원들로 쪼갤 수 없기 때문
+  
+* `recursive vector`
+
+  * 작은 구성원들로 쪼개짐. (접근 가능)
+]
+.pull-right[
+
+
+```r
+mylist$name
+```
+
+```
+## [1] "issac"
+```
+
+```r
+mylist$id
+```
+
+```
+## [1] 30096
+```
+
+```r
+mylist$order
+```
+
+```
+## [1] 1 2
+```
+
+]
+
+]
+
+---
+# 태그 (tag) 없이 선언하기
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+### 태크 사용
+
+
+```r
+mylist
+```
+
+```
+## $name
+## [1] "issac"
+## 
+## $id
+## [1] 30096
+## 
+## $order
+## [1] 1 2
+```
+
+* 태그 사용하는 것을 권장함.
+
+]
+.pull-right[
+### 태크 미사용
+
+
+```r
+mylist2 &lt;- list("issac",
+                30096, 
+                c(1, 2))
+mylist2
+```
+
+```
+## [[1]]
+## [1] "issac"
+## 
+## [[2]]
+## [1] 30096
+## 
+## [[3]]
+## [1] 1 2
+```
+
+
+]
+
+]
+
+---
+# 리스트 인덱싱(indexing)
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 구성원소 접근하기
+
+* `$` 기호를 이용하여 접근
+
+### `[[]]` vs. `[]`
+
+* 구성원소의 접근을 위해서 `[[]]`을 이용
+
+* 원래 리스트의 부분을 잡아내기 위해서는 `[]`을 이용
+
+]
+.pull-right[
+
+
+```r
+mylist$name
+```
+
+```
+## [1] "issac"
+```
+
+```r
+mylist[["name"]]
+```
+
+```
+## [1] "issac"
+```
+
+```r
+mylist["name"]
+```
+
+```
+## $name
+## [1] "issac"
+```
+
+
+]
+
+
+
+]
+
+---
+# 리스트 인덱싱(indexing)
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 숫자를 사용한 접근
+
+* 상황에 따라서 편리한 접근 방법을 사용
+
+### .red[외우기!]
+
+* `[[]]`의 결과는 구성원소 그 자체
+
+* `[]`의 결과는 리스트
+
+
+]
+.pull-right[
+
+
+```r
+mylist[[1]]
+```
+
+```
+## [1] "issac"
+```
+
+```r
+mylist[1]
+```
+
+```
+## $name
+## [1] "issac"
+```
+
+```r
+mylist2[1]
+```
+
+```
+## [[1]]
+## [1] "issac"
+```
+
+
+]
+
+]
+
+---
+# 구성원소 추가/삭제/변경
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 변경 및 추가
+
+* `$` 기호를 사용함.
+
+
+```r
+mylist$id &lt;- 202124
+mylist
+```
+
+```
+## $name
+## [1] "issac"
+## 
+## $id
+## [1] 202124
+## 
+## $order
+## [1] 1 2
+```
+
+]
+.pull-right[
+
+```r
+mylist$add &lt;- "new element"
+mylist
+```
+
+```
+## $name
+## [1] "issac"
+## 
+## $id
+## [1] 202124
+## 
+## $order
+## [1] 1 2
+## 
+## $add
+## [1] "new element"
+```
+]
+
+]
+
+---
+# 구성원소 추가/삭제/변경
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### `NULL`을 사용한 삭제
+
+
+```r
+mylist$add &lt;- NULL
+mylist
+```
+
+```
+## $name
+## [1] "issac"
+## 
+## $id
+## [1] 202124
+## 
+## $order
+## [1] 1 2
+```
+
+]
+.pull-right[
+### 한번에 여러개 변경
+
+
+```r
+mylist[1:2] &lt;- list("jelly", 
+                    203149)
+mylist
+```
+
+```
+## $name
+## [1] "jelly"
+## 
+## $id
+## [1] 203149
+## 
+## $order
+## [1] 1 2
+```
+
+]
+
+]
+
+---
+# 리스트 안에 리스트 있다.
+
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+### 재귀 (recursive) 리스트
+
+
+```r
+mylist$new &lt;- list("hello",
+                   c(1, 3, 2))
+mylist
+```
+
+* 리스트 안에 리스트 있다.
+
+* 어떻게 접근할까?
+
+]
+.pull-right[
+
+```
+## $name
+## [1] "jelly"
+## 
+## $id
+## [1] 203149
+## 
+## $order
+## [1] 1 2
+## 
+## $new
+## $new[[1]]
+## [1] "hello"
+## 
+## $new[[2]]
+## [1] 1 3 2
+```
+
+]
+
+
+
+]
+
+---
+# 재귀 리스트 접근방법
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 해석 연습
+
+* 옆의 코드를 보고 결과를 이해하자!
+
+* `mylist[1][2]`의 결과는?
+
+  * 왜 안될까?
+  
+]
+.pull-right[
+
+
+```r
+mylist$new[1]
+```
+
+```
+## [[1]]
+## [1] "hello"
+```
+
+```r
+mylist$new[[1]]
+```
+
+```
+## [1] "hello"
+```
+
+```r
+mylist$new[[2]][2]
+```
+
+```
+## [1] 3
+```
+
+]
+
+
+]
+
+---
+# 리스트와 언리스트(Unlist)
+
+.left-column[
+
+]
+.right-column[
+### `unlist()`를 사용한 변환
+
+* 문법 `unlist(x, recursive = TRUE, use.names = TRUE)`
+
+.pull-left[
+* `recursive` 옵션
+
+  * 안에 들어있는 리스트들도 `unlist()`를 적용할 것인가?
+  
+  * `unlist(mylist, recursive = FALSE)` 확인
+  
+]
+.pull-right[
+
+```r
+unlist(mylist)
+```
+
+```
+##     name       id   order1   order2     new1     new2     new3     new4 
+##  "jelly" "203149"      "1"      "2"  "hello"      "1"      "3"      "2"
+```
+
+]
+
+]
+
+---
+# 리스트 합치기 (Concatenating)
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+
+
+```r
+c(list(1, "2"), 
+  list(5, c(1, 3)))
+```
+
+```
+## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] "2"
+## 
+## [[3]]
+## [1] 5
+## 
+## [[4]]
+## [1] 1 3
+```
+
+]
+.pull-right[
+
+### `recursive` 옵션을 사용한 `unlist`
+
+
+```r
+c(list(1, "2"), 
+  list(5, c(1, 3)), 
+  recursive = TRUE)
+```
+
+```
+## [1] "1" "2" "5" "1" "3"
+```
+]
+
+]
+
+---
+# 리스트에 함수 적용하기
+
+.left-column[
+
+]
+.right-column[
+.pull-left[
+### 벡터에 함수 적용
+
+* 벡터가 주어졌을때 함수 적용이 너무 쉬웠음.
+
+
+```r
+sum(1:10)
+```
+
+```
+## [1] 55
+```
+
+* 벡터가 많다면 함수를 일일이 적용해야 할까?
+
+]
+.pull-right[
+
+
+```r
+sum(1:10)
+```
+
+```
+## [1] 55
+```
+
+```r
+sum(112:120)
+```
+
+```
+## [1] 1044
+```
+
+```r
+sum(20:40)
+```
+
+```
+## [1] 630
+```
+
+```r
+#...
+```
+
+]
+
+
+]
+
+---
+# `lapply()`와 `sapply()` 함수
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+### 리스트의 각 원소에 동일한 함수를 적용
+
+* `lapply(list, function)`
+
+* `l(ist)apply()` 함수는 리스트 각 원소에 접근해서 같은 함수를 적용시켜 줌.
+
+  * 결과는 리스트로 나옴.
+  
+* `simplied (l)apply()` 함수는 결과를 단순화시켜서 벡터형식으로 뱉어냄.
+
+]
+.pull-right[
+
+
+```r
+lapply(list(1:2, 1:5), sum) 
+```
+
+```
+## [[1]]
+## [1] 3
+## 
+## [[2]]
+## [1] 15
+```
+
+```r
+sapply(list(1:2, 1:5), sum) 
+```
+
+```
+## [1]  3 15
+```
+
+]
+
+]
+
+---
+# 연습문제
+
+.left-column[
+
+]
+.right-column[
+* 각 벡터들의 최대값의 위치는?
+
+
+```r
+set.seed(2021)
+mylist3 &lt;- replicate(100, runif(sample(10:50, 1)))
+str(mylist3)
+```
+
+```
+## List of 100
+##  $ : num [1:16] 0.784 0.71 0.382 0.636 0.701 ...
+##  $ : num [1:32] 0.958 0.546 0.14 0.955 0.392 ...
+##  $ : num [1:24] 0.0728 0.5312 0.3617 0.1874 0.4627 ...
+##  $ : num [1:40] 0.289 0.693 0.995 0.546 0.409 ...
+##  $ : num [1:32] 0.0661 0.0462 0.5064 0.2592 0.4265 ...
+##  $ : num [1:16] 0.0361 0.1589 0.6024 0.0819 0.6896 ...
+##  $ : num [1:10] 0.4588 0.1075 0.7647 0.7033 0.0264 ...
+##  $ : num [1:22] 0.237 0.385 0.616 0.479 0.336 ...
+##  $ : num [1:22] 0.443 0.267 0.313 0.405 0.116 ...
+##  $ : num [1:31] 0.0276 0.5461 0.9528 0.092 0.6811 ...
+##  $ : num [1:33] 0.403 0.166 0.706 0.692 0.578 ...
+##  $ : num [1:40] 0.636 0.342 0.476 0.843 0.93 ...
+##  $ : num [1:13] 0.0531 0.9962 0.9633 0.9805 0.207 ...
+##  $ : num [1:14] 0.823 0.884 0.648 0.399 0.932 ...
+##  $ : num [1:33] 0.828 0.645 0.766 0.842 0.4 ...
+##  $ : num [1:43] 0.6065 0.8973 0.0896 0.1151 0.198 ...
+##  $ : num [1:32] 0.7071 0.1487 0.9724 0.0204 0.4065 ...
+##  $ : num [1:38] 0.3395 0.9723 0.0999 0.8665 0.4611 ...
+##  $ : num [1:10] 0.923 0.185 0.177 0.704 0.843 ...
+##  $ : num [1:34] 0.6658 0.175 0.4987 0.8909 0.0297 ...
+##  $ : num [1:45] 0.854 0.949 0.609 0.264 0.337 ...
+##  $ : num [1:32] 0.7164 0.2502 0.4443 0.7518 0.0596 ...
+##  $ : num [1:12] 0.465 0.957 0.139 0.179 0.466 ...
+##  $ : num [1:32] 0.117 0.673 0.26 0.428 0.437 ...
+##  $ : num [1:17] 0.479 0.3635 0.0183 0.0244 0.0584 ...
+##  $ : num [1:14] 0.185 0.875 0.374 0.879 0.972 ...
+##  $ : num [1:21] 0.132 0.801 0.224 0.993 0.219 ...
+##  $ : num [1:26] 0.0765 0.8298 0.3053 0.7568 0.536 ...
+##  $ : num [1:20] 0.88 0.43 0.469 0.434 0.709 ...
+##  $ : num [1:14] 0.0459 0.9927 0.4804 0.4268 0.8337 ...
+##  $ : num [1:17] 0.0609 0.7262 0.5781 0.2617 0.7992 ...
+##  $ : num [1:43] 0.282 0.507 0.957 0.409 0.949 ...
+##  $ : num [1:40] 0.344 0.561 0.473 0.858 0.597 ...
+##  $ : num [1:26] 0.944 0.235 0.72 0.682 0.226 ...
+##  $ : num [1:39] 0.035 0.4117 0.7257 0.0242 0.4482 ...
+##  $ : num [1:28] 0.7687 0.0399 0.9137 0.806 0.4906 ...
+##  $ : num [1:29] 0.963 0.561 0.558 0.999 0.264 ...
+##  $ : num [1:27] 0.621 0.152 0.104 0.634 0.911 ...
+##  $ : num [1:41] 0.815 0.906 0.343 0.361 0.422 ...
+##  $ : num [1:37] 0.543 0.311 0.778 0.585 0.169 ...
+##  $ : num [1:13] 0.966 0.558 0.229 0.544 0.569 ...
+##  $ : num [1:50] 0.834 0.988 0.262 0.388 0.13 ...
+##  $ : num [1:50] 0.3065 0.8006 0.6016 0.0819 0.6424 ...
+##  $ : num [1:32] 0.281 0.671 0.637 0.127 0.967 ...
+##  $ : num [1:44] 0.907 0.6535 0.0129 0.2862 0.8712 ...
+##  $ : num [1:14] 0.599 0.522 0.944 0.588 0.193 ...
+##  $ : num [1:27] 0.917 0.967 0.809 0.848 0.846 ...
+##  $ : num [1:25] 0.471 0.829 0.125 0.893 0.994 ...
+##  $ : num [1:28] 0.538 0.335 0.796 0.831 0.503 ...
+##  $ : num [1:37] 0.144 0.107 0.346 0.351 0.856 ...
+##  $ : num [1:25] 0.582 0.427 0.22 0.802 0.534 ...
+##  $ : num [1:45] 0.3575 0.486 0.6742 0.0448 0.3176 ...
+##  $ : num [1:48] 0.531 0.238 0.647 0.337 0.982 ...
+##  $ : num [1:44] 0.141 0.0915 0.2595 0.8338 0.45 ...
+##  $ : num [1:34] 0.0984 0.4408 0.6963 0.916 0.725 ...
+##  $ : num [1:49] 0.5113 0.0608 0.8534 0.2456 0.5172 ...
+##  $ : num [1:40] 0.193 0.644 0.313 0.125 0.522 ...
+##  $ : num [1:39] 0.217 0.479 0.532 0.751 0.928 ...
+##  $ : num [1:17] 0.349 0.307 0.941 0.777 0.585 ...
+##  $ : num [1:40] 0.8951 0.615 0.4812 0.0588 0.5782 ...
+##  $ : num [1:36] 0.262 0.721 0.815 0.393 0.942 ...
+##  $ : num [1:35] 0.3137 0.9129 0.8734 0.983 0.0717 ...
+##  $ : num [1:19] 0.451 0.697 0.901 0.391 0.537 ...
+##  $ : num [1:36] 0.457 0.077 0.568 0.665 0.934 ...
+##  $ : num [1:35] 0.728 0.329 0.477 0.853 0.437 ...
+##  $ : num [1:49] 0.0112 0.7599 0.9233 0.4734 0.9118 ...
+##  $ : num [1:29] 0.266 0.528 0.795 0.619 0.893 ...
+##  $ : num [1:33] 0.948 0.567 0.532 0.922 0.217 ...
+##  $ : num [1:45] 0.565 0.211 0.625 0.752 0.317 ...
+##  $ : num [1:31] 0.393 0.208 0.723 0.982 0.413 ...
+##  $ : num [1:32] 0.00757 0.30393 0.52286 0.16894 0.99399 ...
+##  $ : num [1:46] 0.776 0.567 0.983 0.864 0.245 ...
+##  $ : num [1:29] 0.2291 0.0603 0.5824 0.6481 0.0247 ...
+##  $ : num [1:47] 0.936 0.9476 0.0997 0.2937 0.521 ...
+##  $ : num [1:34] 0.6029 0.2681 0.9078 0.0611 0.4762 ...
+##  $ : num [1:40] 0.648 0.38 0.659 0.356 0.739 ...
+##  $ : num [1:26] 0.3971 0.0167 0.7374 0.0908 0.9617 ...
+##  $ : num [1:10] 0.6967 0.1208 0.5516 0.1596 0.0174 ...
+##  $ : num [1:50] 0.621 0.353 0.335 0.637 0.505 ...
+##  $ : num [1:40] 0.8128 0.8421 0.2815 0.5271 0.0925 ...
+##  $ : num [1:24] 0.721 0.849 0.64 0.308 0.182 ...
+##  $ : num [1:48] 0.0834 0.5442 0.9504 0.5308 0.1691 ...
+##  $ : num [1:12] 0.729 0.453 0.678 0.67 0.586 ...
+##  $ : num [1:14] 0.3233 0.923 0.0106 0.8603 0.4308 ...
+##  $ : num [1:15] 0.584 0.0174 0.4822 0.4412 0.5489 ...
+##  $ : num [1:46] 0.5448 0.0878 0.2715 0.4783 0.9491 ...
+##  $ : num [1:25] 0.455 0.753 0.115 0.346 0.591 ...
+##  $ : num [1:19] 0.8437 0.6283 0.6761 0.591 0.0926 ...
+##  $ : num [1:34] 0.3491 0.0118 0.8204 0.2114 0.2179 ...
+##  $ : num [1:24] 0.092 0.416 0.718 0.707 0.558 ...
+##  $ : num [1:21] 0.898 0.418 0.223 0.113 0.994 ...
+##  $ : num [1:18] 0.2184 0.82 0.9086 0.0145 0.6889 ...
+##  $ : num [1:47] 0.195 0.536 0.313 0.862 0.838 ...
+##  $ : num [1:10] 0.142 0.989 0.645 0.543 0.147 ...
+##  $ : num [1:46] 0.4115 0.0809 0.5059 0.2859 0.7408 ...
+##  $ : num [1:35] 0.179 0.681 0.956 0.286 0.547 ...
+##  $ : num [1:29] 0.07 0.184 0.122 0.402 0.981 ...
+##  $ : num [1:19] 0.948 0.441 0.575 0.467 0.455 ...
+##  $ : num [1:47] 0.395 0.137 0.208 0.772 0.307 ...
+##   [list output truncated]
+```
+
+
+]
+
+---
+class: inverse, middle, center
+
+# 다음시간
+
+&lt;img src="https://image.flaticon.com/icons/png/512/5221/5221470.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+## 데이터 프레임
+
+---
+## 참고자료 및 사용교재
+
+[1] [The art of R programming](https://amzn.to/3hHrsAp)
+
+* R 공부하시는 분이면 꼭 한번 보셔야하는 책입니다.
+
+* 위 교재의 한글 번역본 [빅데이터 분석 도구 R 프로그래밍](https://coupa.ng/b27BSI)도 있습니다. 도서 제목 클릭하셔서 구매하시면 저의 .red[사리사욕]을 충당하는데 도움이 됩니다.
+
+[2] [how to download and display an image from an URL in R?](https://stackoverflow.com/questions/29110903/how-to-download-and-display-an-image-from-an-url-in-r)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<!--Hat-tip: https://www.garrickadenbuie.com/blog/xaringan-tip-logo-all-slides/-->
+<style>
+.logo {
+  background-image: url(img/logo-blue.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

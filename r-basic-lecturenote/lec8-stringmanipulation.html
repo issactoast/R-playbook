@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>.blue[R] 프로그래밍 기초다지기</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Issac Lee" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link rel="stylesheet" href="css/statisticsplaybook.css" type="text/css" />
+    <link rel="stylesheet" href="css/statisticsplaybook-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, left, top
+
+# .blue[R] 프로그래밍 기초다지기
+----
+## **8강 - 문자열 다루기**
+### [슬기로운통계생활](https://www.youtube.com/c/statisticsplaybook)
+### Issac Lee
+
+
+---
+class: inverse, middle, center
+
+# .red[문자열](String) 다루기
+
+&lt;img src="https://image.flaticon.com/icons/png/512/773/773228.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+---
+# 문자열의 중요성
+
+.left-column[
+
+]
+.right-column[
+
+### 문자 데이터의 중요성
+
+* 우리의 일상에서 빼놓을 수 없는 것이 바로 글자!
+
+* 문자를 잘 다루는 능력, 문자를 데이터로 바꾸는 능력은 너무나 중요함.
+
+### 이번 강의 목표
+
+* 문자를 다루는 R 함수들의 기본적인 사용법을 익히자.
+
+* 문자열 관련 R 패키지들 맛보기
+
+
+]
+
+---
+# 문자열 예제
+
+.left-column[
+
+]
+.right-column[
+
+* [`hometown.txt`](https://blog.kakaocdn.net/dn/rDavW/btrdgSVUE9i/qKvbKtojECnsyy4WkdT7rK/hometown.txt?attach=1&amp;knm=tfile.txt) 파일에는 아래와 같은 백석의 시가 들어 있습니다.
+
+고향(故鄕)_백석
+
+나는 북관(北關)에 혼자 앓아 누워서
+어느 아침 의원(醫員)을 뵈이었다.
+
+의원은 여래(如來) 같은 상을 하고 관공(關公)의 수염을 드리워서
+먼 옛적 어느 나라 신선 같은데
+새끼손톱 길게 돋은 손을 내어
+묵묵하니 한참 맥을 짚더니
+문득 물어 고향이 어데냐 한다.
+
+평안도 정주라는 곳이라 한즉
+그러면 아무개 씨 고향이란다.
+그러면 아무개 씨 아느나 한즉
+의원은 빙긋이 웃을을 띠고
+막역지간이라며 수염을 쓸는다.
+
+나는 아버지로 섬기는 이라 한즉
+의원은 또다시 넌지시 웃고
+말없이 팔을 잡아 맥을 보는데
+손길은 따스하고 부드러워
+고향도 아버지도 아버지의 친구도 다 있었다.
+
+]
+
+---
+# 문자열 불러오기
+
+.left-column[
+
+]
+.right-column[
+
+* 텍스트 파일의 각 줄이 .blue[벡터의 원소]가 됨
+
+
+```r
+hometown &lt;- readLines("./data/hometown.txt",
+                      encoding = "UTF-8")
+```
+
+.pull-left[
+
+```r
+head(hometown)
+```
+
+```
+## [1] "고향(故鄕) 백석"                                              
+## [2] ""                                                             
+## [3] "나는 북관(北關)에 혼자 앓아 누워서"                           
+## [4] "어느 아침 의원(醫員)을 뵈이었다."                             
+## [5] ""                                                             
+## [6] "의원은 여래(如來) 같은 상을 하고 관공(關公)의 수염을 드리워서"
+```
+
+]
+.pull-right[
+
+```r
+class(hometown)
+```
+
+```
+## [1] "character"
+```
+
+```r
+length(hometown)
+```
+
+```
+## [1] 22
+```
+
+]
+
+]
+
+---
+# 특정 단어를 검색 `grep()`
+
+.left-column[
+
+]
+.right-column[
+### 특정 단어를 포함한 줄의 위치
+
+* 문법: `grep(패턴, 문자열 벡터)`
+
+.pull-left[
+
+```r
+index &lt;- grep("아버지", hometown)
+```
+
+]
+.pull-right[
+* 18번째, 22번째 줄이 "아버지"를 포함
+
+
+```r
+hometown[index]
+```
+
+```
+## [1] "나는 아버지로 섬기는 이라 한즉"            
+## [2] "고향도 아버지도 아버지의 친구도 다 있었다."
+```
+
+]
+
+]
+
+---
+# 문자의 길이를 재는 `nchar()`
+
+.left-column[
+
+]
+.right-column[
+### 글자 수를 세어 줌
+
+* 문법: `nchar(문자열)`
+
+
+```r
+hometown[1]
+```
+
+```
+## [1] "고향(故鄕) 백석"
+```
+
+```r
+nchar(hometown[1])
+```
+
+```
+## [1] 9
+```
+
+* 주의점: 공백과 특수 문자도 글자 하나!
+
+
+]
+
+---
+# 여러 개의 문자열을 이어주는 `paste()`
+
+.left-column[
+
+]
+.right-column[
+
+### 공백의 유무에 따른 함수 선택
+
+.pull-left[
+
+```r
+paste("백석", "고향")
+```
+
+```
+## [1] "백석 고향"
+```
+
+]
+.pull-right[
+
+```r
+paste0("백석", "고향")
+```
+
+```
+## [1] "백석고향"
+```
+
+]
+
+* 벡터화 코드
+
+
+```r
+paste0(1:5, c("st", "nd", "rd", rep("th", 2)))
+```
+
+```
+## [1] "1st" "2nd" "3rd" "4th" "5th"
+```
+
+]
+
+---
+# `paste()` 함수의 주요 옵션
+
+.left-column[
+
+]
+.right-column[
+
+* 문자열 사이를 채워줄 때 `sep` 
+
+
+```r
+paste("1st", "2nd", "3rd")
+```
+
+```
+## [1] "1st 2nd 3rd"
+```
+
+```r
+paste("1st", "2nd", "3rd", sep = ", ")
+```
+
+```
+## [1] "1st, 2nd, 3rd"
+```
+
+```r
+paste(hometown[1], hometown[3])
+```
+
+```
+## [1] "고향(故鄕) 백석 나는 북관(北關)에 혼자 앓아 누워서"
+```
+
+]
+
+---
+# `paste()` 함수의 주요 옵션 2
+
+.left-column[
+
+]
+.right-column[
+### 벡터의 원소들을 문자열로
+
+* 벡터의 각 원소들을 하나로 합쳐서 긴 문자열을 만드는 데에 사용
+
+
+```r
+paste(1:5, collapse="")
+```
+
+```
+## [1] "12345"
+```
+
+```r
+paste(hometown[1:3], collapse=", ")
+```
+
+```
+## [1] "고향(故鄕) 백석, , 나는 북관(北關)에 혼자 앓아 누워서"
+```
+
+]
+
+---
+# 문자열의 부분을 가져오는 `substr()`
+
+.left-column[
+
+]
+.right-column[
+
+* 문법: `substr(문자열, 시작점, 끝점)`
+
+
+```r
+hometown[1]
+```
+
+```
+## [1] "고향(故鄕) 백석"
+```
+
+```r
+substr(hometown[1], 3, 6)
+```
+
+```
+## [1] "(故鄕)"
+```
+
+]
+
+---
+# 문자열을 나눠주는 `strsplit()`
+
+.left-column[
+
+]
+.right-column[
+
+* 문법: `strsplit(문자열 벡터, 패턴)`
+
+
+```r
+hometown[3]
+```
+
+```
+## [1] "나는 북관(北關)에 혼자 앓아 누워서"
+```
+
+```r
+strsplit(hometown[3], split = " ")
+```
+
+```
+## [[1]]
+## [1] "나는"         "북관(北關)에" "혼자"        
+## [4] "앓아"         "누워서"
+```
+
+* 결과가 리스트로 나옴에 주의
+
+]
+
+---
+# 특정 문자 바꿔주기 `gsub()`
+
+.left-column[
+
+]
+.right-column[
+* 문법: `gsub(찾을 패턴, 바꿀 내용, 문자열벡터)`
+
+
+```r
+hometown[6:7]
+```
+
+```
+## [1] "의원은 여래(如來) 같은 상을 하고 관공(關公)의 수염을 드리워서"
+## [2] "먼 옛적 어느 나라 신선 같은데"
+```
+
+```r
+gsub(" ", "", hometown[6:7])
+```
+
+```
+## [1] "의원은여래(如來)같은상을하고관공(關公)의수염을드리워서"
+## [2] "먼옛적어느나라신선같은데"
+```
+
+]
+
+---
+# 괄호 안의 문자들은 어떻게 지울까?
+
+.left-column[
+
+]
+.right-column[
+### Regular expression
+
+* 괄호 안의 한자들을 일괄 삭제 하고 싶다면, 괄호 안 한자들을 모두 가져올 수 없는 노릇
+
+
+```r
+hometown[6]
+```
+
+```
+## [1] "의원은 여래(如來) 같은 상을 하고 관공(關公)의 수염을 드리워서"
+```
+
+```r
+hometown[6] |&gt; 
+  {\(.) gsub("\\(如來\\)", "", .)}() |&gt; 
+  {\(.) gsub("\\(關公\\)", "", .)}()
+```
+
+```
+## [1] "의원은 여래 같은 상을 하고 관공의 수염을 드리워서"
+```
+
+]
+
+---
+# 정규 표현식
+
+.left-column[
+
+]
+.right-column[
+
+* 복잡한 문자열 패턴들을 일정 규칙을 사용해서 표현 
+
+규칙 1. 특수문자들 앞에는 백슬래쉬 2개를 붙여줌
+
+
+```r
+gsub("\\.", "", "statistics.playbook")
+```
+
+```
+## [1] "statisticsplaybook"
+```
+
+```r
+gsub("\\?", "", "statistics?playbook")
+```
+
+```
+## [1] "statisticsplaybook"
+```
+
+]
+
+---
+# 정규 표현식
+
+.left-column[
+
+]
+.right-column[
+
+규칙 2. 대문자는 `Not`을 의미
+
+.pull-left[
+`\\d` - 숫자 (0-9)
+
+`\\w` - 문자
+
+`\\s` - 공백
+
+]
+.pull-right[
+`\\D` - 숫자가 아닌 것
+
+`\\W` - 문자가 아닌 것
+
+`\\S` - 공백이 아닌 것
+
+]
+
+
+.pull-left[
+
+```r
+gsub("\\d", "", "stat.123")
+```
+
+```
+## [1] "stat."
+```
+
+]
+.pull-right[
+
+```r
+gsub("\\D", "", "stat.123")
+```
+
+```
+## [1] "123"
+```
+
+] 
+
+]
+
+---
+# 정규 표현식
+
+.left-column[
+
+]
+.right-column[
+규칙 3. 점은 줄바꿈을 제외한 모든 문자을 의미
+
+
+```r
+random_string &lt;- c("123-123",
+                   "123.123",
+                   "statistics.playbook",
+                   "r-programming")
+grep("\\d\\d\\d.\\d\\d\\d", random_string)
+```
+
+```
+## [1] 1 2
+```
+
+```r
+grep("\\.", random_string)
+```
+
+```
+## [1] 2 3
+```
+
+]
+
+---
+# 정규표현식
+
+.left-column[
+
+]
+.right-column[
+규칙 4. 대괄호를 사용하여 `[]` 매칭 조건을 설정할 수 있음.
+
+
+```r
+random_string &lt;- c("123-123",
+                   "123.123",
+                   "123*123",
+                   "123!123")
+grep("\\d\\d\\d[.*]\\d\\d\\d", random_string)
+```
+
+```
+## [1] 2 3
+```
+
+```r
+grep("\\d\\d\\d[!-]\\d\\d\\d", random_string)
+```
+
+```
+## [1] 1 4
+```
+
+]
+
+
+---
+# 정규표현식
+
+.left-column[
+
+]
+.right-column[
+규칙 4. 매칭 갯수 설정
+
+
+```r
+test_string &lt;- c("슬기로운.통계생활", "슬기로운*PlayBOOK")
+```
+
+.pull-left[
+`*` - 0 또는 그 이상
+
+`+` - 1 또는 그 이상
+
+`?` - 0 또는 1
+
+`{3}` - 딱 3개 
+
+`{3, 5}` - 3개에서 5개
+
+]
+.pull-right[
+
+```r
+gsub("슬\\w*", "", test_string)
+```
+
+```
+## [1] ".통계생활" "*PlayBOOK"
+```
+
+```r
+gsub("슬\\w{2}", "", test_string)
+```
+
+```
+## [1] "운.통계생활" "운*PlayBOOK"
+```
+
+]
+
+]
+
+---
+# 정규표현식
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+* `[]` 대괄호 안의 문자 매치
+
+* `[^]` 대괄호 안의 문자 외 매치
+
+* `|` 또는
+
+* `()` 그룹
+
+```r
+ex_str &lt;- c("Mr. 슬통", "Mr 마통",
+            "Ms. Lee", "Mr. R")
+m1 &lt;- regexpr("Mr\\.", ex_str)
+m2 &lt;- regexpr("Mr\\.?", ex_str)
+m3 &lt;- regexpr("M(r|s)\\.?", ex_str)
+```
+
+]
+.pull-right[
+
+```r
+regmatches(ex_str, m1)
+```
+
+```
+## [1] "Mr." "Mr."
+```
+
+```r
+regmatches(ex_str, m2)
+```
+
+```
+## [1] "Mr." "Mr"  "Mr."
+```
+
+```r
+regmatches(ex_str, m3)
+```
+
+```
+## [1] "Mr." "Mr"  "Ms." "Mr."
+```
+
+]
+
+]
+
+---
+# 정규표현식
+
+.left-column[
+
+]
+.right-column[
+
+```r
+m4 &lt;- regexpr("M(r|s)\\.?\\s[A-Z]\\w*", ex_str)
+regmatches(ex_str, m4)
+```
+
+```
+## [1] "Ms. Lee" "Mr. R"
+```
+
+```r
+m5 &lt;- regexpr("M(r|s)\\.?\\s[가-힣]\\w*", ex_str)
+regmatches(ex_str, m5)
+```
+
+```
+## [1] "Mr. 슬통" "Mr 마통"
+```
+
+```r
+m6 &lt;- regexpr("M(r|s)\\.?\\s[A-Z|가-힣]\\w*", ex_str)
+regmatches(ex_str, m6)
+```
+
+```
+## [1] "Mr. 슬통" "Mr 마통"  "Ms. Lee"  "Mr. R"
+```
+
+]
+
+---
+# 백석 시 한자 걸러내기
+
+.left-column[
+
+]
+.right-column[
+
+
+```r
+hometown[1]
+```
+
+```
+## [1] "고향(故鄕) 백석"
+```
+
+```r
+gsub("\\([^가-힣]\\w*\\)", "", hometown[1])
+```
+
+```
+## [1] "고향 백석"
+```
+
+
+```r
+total &lt;- paste(hometown, collapse = "\n")
+total &lt;- gsub("\\([^가-힣]\\w*\\)", "", total)
+file_con &lt;- file("./data/output.txt", encoding="UTF-8")
+writeLines(total, file_con)
+close(file_con)
+```
+
+
+]
+
+---
+class: inverse, middle, center
+
+# 다음시간
+
+&lt;img src="https://image.flaticon.com/icons/png/512/3079/3079036.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+## .blue[시각화]
+
+---
+## 참고자료 및 사용교재
+
+[1] [The art of R programming](https://amzn.to/3hHrsAp)
+
+* R 공부하시는 분이면 꼭 한번 보셔야 하는 책입니다.
+
+* 위 교재의 한글 번역본 [빅데이터 분석 도구 R 프로그래밍](https://coupa.ng/b27BSI)도 있습니다. 도서 제목 클릭하셔서 구매하시면 저의 .red[사리사욕]을 충당하는데 도움이 됩니다.
+
+[2] [Regular Expressions (Regex) Tutorial: How to Match Any Pattern of Text](https://www.youtube.com/watch?v=sa-TUpSx1JA)
+
+* Corey Schafer 정규표현식 유튜브 강의 (영어)
+
+* 정규 표현식 내용 기반이 된 영상입니다. 제가 좋아하는 유튜버! :)
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "googlecode",
+"highlightLines": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<!--Hat-tip: https://www.garrickadenbuie.com/blog/xaringan-tip-logo-all-slides/-->
+<style>
+.logo {
+  background-image: url(img/logo-blue.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -289,7 +289,7 @@ plot(raster::as.raster(img1),
      interpolate = FALSE)
 ```
 
-&lt;img src="lec3-matrix-and-array_files/figure-html/unnamed-chunk-12-1.png" width="70%" /&gt;
+&lt;img src="C:/Users/issac/Documents/Teaching/R-playbook/lecturenote/lec3-matrix-and-array_files/figure-html/unnamed-chunk-12-1.png" width="70%" /&gt;
 
 ]
 
@@ -301,42 +301,94 @@ plot(raster::as.raster(img1),
 
 ]
 .right-column[
-### 이미지도 행렬이다.
-
-* 주의: 너무 재미있어서 시간가는줄 모름.
 
 .pull-left[
 
 ```r
-data_url &lt;- "https://raw.githubusercontent.com/issactoast/R-playbook/main/lecturenote/data/img.rds"
-download.file(data_url, "jelly.rds")
-jelly_bw &lt;- readRDS("jelly.rds")
-file.remove("jelly.rds")
+data_url &lt;- "https://raw.githubusercontent.com/issactoast/R-playbook/main/lecturenote/data/mat.rds"
+download.file(data_url, 
+              "mat.rds")
+img_mat &lt;- readRDS("mat.rds")
+file.remove("mat.rds")
 ```
 
 ```
 ## [1] TRUE
 ```
 
-```r
-# img &lt;- png::readPNG(img_file)dd
-```
-
 ]
 .pull-right[
 
 ```r
-dim(jelly_bw)
+dim(img_mat)
 ```
 
 ```
 ## [1] 88 50
 ```
 
+```r
+head(img_mat[1:3, 1:4])
+```
+
+```
+##      [,1] [,2] [,3] [,4]
+## [1,]  132  131  134  132
+## [2,]  135  137  137  138
+## [3,]  143  142  145  146
+```
+
 ]
 
 
 ]
+
+---
+# 행렬에서 사진으로
+
+.left-column[
+
+]
+.right-column[
+
+.pull-left[
+
+```r
+max(img_mat)
+```
+
+```
+## [1] 255
+```
+
+```r
+min(img_mat)
+```
+
+```
+## [1] 0
+```
+
+* 색깔 매칭을 위해 스케일링
+
+
+```r
+img_mat &lt;- img_mat/255
+```
+
+]
+.pull-right[
+
+```r
+library(raster)
+plot(as.raster(img_mat))
+```
+
+![](C:/Users/issac/Documents/Teaching/R-playbook/lecturenote/lec3-matrix-and-array_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+
+]
+]
+
 
 ---
 # 행렬 클래스
@@ -877,20 +929,55 @@ aperm(my_array, c(2,1,3))
 ]
 
 ---
+# 사진은 .red[배열]이다.
 
+.left-column[
+
+]
+.right-column[
+.pull-left[
 
 ```r
-library(magick)
-frink &lt;- image_read("https://jeroen.github.io/images/frink.png")
+library(png)
+img_url &lt;- "https://raw.githubusercontent.com/issactoast/R-playbook/main/lecturenote/img/jelly.png"
+download.file(img_url, "jelly.png", 
+              mode="wb")
+jelly &lt;- readPNG("jelly.png")
+file.remove("jelly.png")
 ```
 
+```
+## [1] TRUE
+```
+
+```r
+dim(jelly)
+```
+
+```
+## [1] 88 50  4
+```
+
+]
+.pull-right[
+* .red[Red], .green[Green], .blue[Blue], Opacity 
+
+  * 색깔 속성을 0~255
+
+  * 투명토는 0~1
+
+&lt;img src="C:/Users/issac/Documents/Teaching/R-playbook/lecturenote/lec3-matrix-and-array_files/figure-html/unnamed-chunk-40-1.png" width="95%" /&gt;
+
+]
+
+]
 
 ---
 class: inverse, middle, center
 
 # 다음시간
 
-&lt;img src="https://image.flaticon.com/icons/png/512/3815/3815182.png" width="20%" style="display: block; margin: auto;" /&gt;
+&lt;img src="https://image.flaticon.com/icons/png/512/2666/2666505.png" width="20%" style="display: block; margin: auto;" /&gt;
 
 ## 리스트
 
@@ -902,6 +989,8 @@ class: inverse, middle, center
 * R 공부하시는 분이면 꼭 한번 보셔야하는 책입니다.
 
 * 위 교재의 한글 번역본 [빅데이터 분석 도구 R 프로그래밍](https://coupa.ng/b27BSI)도 있습니다. 도서 제목 클릭하셔서 구매하시면 저의 .red[사리사욕]을 충당하는데 도움이 됩니다.
+
+[2] [how to download and display an image from an URL in R?](https://stackoverflow.com/questions/29110903/how-to-download-and-display-an-image-from-an-url-in-r)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
